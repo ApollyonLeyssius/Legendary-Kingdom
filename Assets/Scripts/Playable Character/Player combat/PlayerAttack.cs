@@ -5,7 +5,8 @@ public class PlayerAttack : MonoBehaviour
 {
 
     public PlayerData PlayerData;
-    [SerializeField] private GameObject Attack;
+    [SerializeField] private GameObject Attacks;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,7 +24,7 @@ public class PlayerAttack : MonoBehaviour
     }
     private void PlayerAttacking()
     {
-        Instantiate(Attack);
+        Instantiate(Attacks);
     }
     private void TakeDamage()
     {
