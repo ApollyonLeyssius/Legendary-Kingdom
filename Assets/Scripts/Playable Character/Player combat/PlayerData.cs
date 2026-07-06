@@ -1,13 +1,13 @@
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerData : MonoBehaviour
+public class PlayerData
 {
-    private int MaxHealth;
-    private int CurrentHealth;
+    public float MaxHealth;
+    public float CurrentHealth;
 
-    private int AttackDamage;
-    private string CharacterName;
+    public int AttackDamage;
+    public string CharacterName;
 
 
 
