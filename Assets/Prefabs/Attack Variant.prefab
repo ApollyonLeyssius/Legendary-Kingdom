@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6239769130689372691
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4053995551804845005, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_Name
+      value: Attack Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.64085644
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.29883623
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.29883623
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.64085644
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6563921151885641590, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4053995551804845005, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8466201070760613043}
+    - targetCorrespondingSourceObject: {fileID: 4053995551804845005, guid: 86797830703662041bab31862d59b5b7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4458134250258246358}
+  m_SourcePrefab: {fileID: 100100000, guid: 86797830703662041bab31862d59b5b7, type: 3}
+--- !u!1 &7987894316953979358 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4053995551804845005, guid: 86797830703662041bab31862d59b5b7, type: 3}
+  m_PrefabInstance: {fileID: 6239769130689372691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8466201070760613043
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7987894316953979358}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f134de1556cdff44492bb67154a5ac2b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-4458134250258246358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7987894316953979358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a382a6e8b5f75494686e44ee5eaba9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackMovement
+  lifeTime: 0.5
