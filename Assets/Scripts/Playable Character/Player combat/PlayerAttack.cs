@@ -1,11 +1,14 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
 
     public PlayerData PlayerData;
+    [SerializeField] private float AttackCooldown = 1f;
     [SerializeField] private GameObject Attacks;
+    private float lastAttackTime = -Mathf.Infinity;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,15 +19,11 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            PlayerAttacking();
-        }
         
     }
     private void PlayerAttacking()
     {
-        Instantiate(Attacks);
+        Instantiate(Attacks, transform.position, transform.rotation);
     }
     private void TakeDamage()
     {
@@ -33,5 +32,13 @@ public class PlayerAttack : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
+    }
+    public void AttackPlayer(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (Time.time - lastAttackTime < AttackCooldown) return;
+
+        PlayerAttacking();
+        lastAttackTime = Time.time;
     }
 }
