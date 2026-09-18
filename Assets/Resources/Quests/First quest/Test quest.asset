@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Test quest
   levelRequirement: 1
   questPrerequisites: []
-  questStepPrefabs: []
+  questStepPrefabs:
+  - {fileID: 7231533905672824390, guid: 773a39a710010bc4dae35d95021b629c, type: 3}
   goldReward: 34
   experienceReward: 45
