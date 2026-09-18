@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 301013888}
   - component: {fileID: 301013889}
   - component: {fileID: 301013890}
+  - component: {fileID: 301013891}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -335,6 +336,21 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &301013891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301013881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 160c8e3c27deb3a4e9f11ee2662ac2cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyChase
+  playerDetection: {fileID: 301013890}
+  movement: {fileID: 301013887}
+  patrol: {fileID: 301013888}
 --- !u!1 &308829380
 GameObject:
   m_ObjectHideFlags: 0
