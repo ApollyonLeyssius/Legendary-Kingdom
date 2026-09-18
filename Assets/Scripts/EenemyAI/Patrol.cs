@@ -1,48 +1,63 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class PAtrol : MonoBehaviour
+public class Patrol : MonoBehaviour
 {
     [SerializeField] private ObstacleMovement movement;
     [SerializeField] private Transform[] patrolPoints;
 
     private int currentPoint;
-   
-    void Start()
+    private bool isPatrolling = true;
+
+    private void Start()
     {
         if (patrolPoints.Length == 0)
         {
-            Debug.LogWarning("No patrol points assigned.");
             return;
         }
-        MoveToNextPoint(); 
+
+        MoveToNextPoint();
     }
 
     private void Update()
     {
-        UpdatePatrol();
-    }
-
-
-    void UpdatePatrol()
-    {
-        if(patrolPoints.Length == 0)
+        if (!isPatrolling)
         {
             return;
         }
 
-        Debug.Log("Checking patrol points");
-
         if (movement.HasReachedDestination())
         {
-            Debug.Log("Reached patrol point");
-
             MoveToNextPoint();
         }
     }
+
+    public void StartPatrol()
+    {
+        if (isPatrolling)
+        {
+            return;
+        }
+
+        isPatrolling = true;
+
+        MoveToNextPoint();
+    }
+
+    public void StopPatrol()
+    {
+        isPatrolling = false;
+    }
+
     private void MoveToNextPoint()
     {
-        movement.MoveTo(patrolPoints[currentPoint].position);
+        if (patrolPoints.Length == 0)
+        {
+            return;
+        }
+
+        movement.MoveTo(
+            patrolPoints[currentPoint].position
+        );
 
         currentPoint++;
 
@@ -52,5 +67,3 @@ public class PAtrol : MonoBehaviour
         }
     }
 }
-
-

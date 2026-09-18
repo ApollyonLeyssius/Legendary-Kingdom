@@ -16,7 +16,7 @@ public class PlayerDetection : MonoBehaviour
     {
         if (CanSeePlayer())
         {
-            Debug.Log("Player detected!");
+            
         }
     }
 
@@ -24,21 +24,21 @@ public class PlayerDetection : MonoBehaviour
     {
         if (player == null)
         {
+            
             return false;
         }
 
         Vector3 directionToPlayer = player.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
-        
         if (distanceToPlayer > detectionRange)
         {
+            
             return false;
         }
 
         directionToPlayer.Normalize();
 
-        
         float angleToPlayer = Vector3.Angle(
             transform.forward,
             directionToPlayer
@@ -46,10 +46,10 @@ public class PlayerDetection : MonoBehaviour
 
         if (angleToPlayer > fieldOfView / 2f)
         {
+            
             return false;
         }
 
-        
         Vector3 eyePosition = transform.position + Vector3.up;
 
         bool obstacleDetected = Physics.Raycast(
@@ -61,9 +61,20 @@ public class PlayerDetection : MonoBehaviour
 
         if (obstacleDetected)
         {
+            
             return false;
         }
 
         return true;
+    }
+
+    public Vector3 GetPlayerPosition()
+    {
+        if (player == null)
+        {
+            return transform.position;
+        }
+
+        return player.position;
     }
 }
