@@ -13,11 +13,7 @@ public class PlayerDetection : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayer;
 
     private void Update()
-    {
-        if (CanSeePlayer())
-        {
-            
-        }
+    { 
     }
 
     public bool CanSeePlayer()
