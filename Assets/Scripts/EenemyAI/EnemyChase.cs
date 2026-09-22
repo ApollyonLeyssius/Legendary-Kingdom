@@ -5,21 +5,25 @@ public class EnemyChase : MonoBehaviour
     [SerializeField] private PlayerDetection playerDetection;
     [SerializeField] private ObstacleMovement movement;
     [SerializeField] private Patrol patrol;
+    [SerializeField] private EnemyCombat enemyCombat;
 
     private bool isChasing;
 
     private void Update()
     {
-        if (playerDetection.CanSeePlayer())
-        {
-            
-
-            ChasePlayer();
-        }
-        else
+        if (!playerDetection.CanSeePlayer())
         {
             StopChasing();
+            return;
         }
+
+        if (enemyCombat.IsInAttackRange())
+        {
+            StopMovementForCombat();
+            return;
+        }
+
+        ChasePlayer();
     }
 
     private void ChasePlayer()
@@ -28,13 +32,16 @@ public class EnemyChase : MonoBehaviour
         {
             isChasing = true;
             patrol.StopPatrol();
-
-            
         }
 
         movement.MoveTo(
             playerDetection.GetPlayerPosition()
         );
+    }
+
+    private void StopMovementForCombat()
+    {
+        movement.Stop();
     }
 
     private void StopChasing()
@@ -45,8 +52,8 @@ public class EnemyChase : MonoBehaviour
         }
 
         isChasing = false;
-        patrol.StartPatrol();
 
-        
+        movement.Stop();
+        patrol.ResumePatrol();
     }
 }

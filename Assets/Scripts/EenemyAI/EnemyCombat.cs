@@ -12,6 +12,8 @@ public class EnemyCombat : MonoBehaviour
     private AttackCooldown attackCooldown;
     private Health playerHealth;
 
+    private bool isInAttackRange;
+
     private void Awake()
     {
         distanceCombat = GetComponent<DistanceCombat>();
@@ -37,7 +39,7 @@ public class EnemyCombat : MonoBehaviour
 
         if (playerHealth == null)
         {
-            Debug.LogError("Player is missing the Health component!");
+            Debug.LogError("Player is missing Health!");
         }
     }
 
@@ -51,16 +53,11 @@ public class EnemyCombat : MonoBehaviour
             return;
         }
 
-        TryAttack();
+        UpdateCombat();
     }
 
-    private void TryAttack()
+    private void UpdateCombat()
     {
-        if (!attackCooldown.CanAttack())
-        {
-            return;
-        }
-
         float distanceToPlayer = Vector3.Distance(
             transform.position,
             player.position
@@ -68,6 +65,19 @@ public class EnemyCombat : MonoBehaviour
 
         DistanceCombat.AttackType attackType =
             distanceCombat.GetAttackType(distanceToPlayer);
+
+        isInAttackRange =
+            attackType != DistanceCombat.AttackType.None;
+
+        if (!isInAttackRange)
+        {
+            return;
+        }
+
+        if (!attackCooldown.CanAttack())
+        {
+            return;
+        }
 
         switch (attackType)
         {
@@ -81,12 +91,16 @@ public class EnemyCombat : MonoBehaviour
         }
     }
 
+    public bool IsInAttackRange()
+    {
+        return isInAttackRange;
+    }
+
     private void ShortAttack()
     {
         Debug.Log("Enemy used SHORT attack!");
 
         playerHealth.TakeDamage(shortAttackDamage);
-
         attackCooldown.StartCooldown();
     }
 
@@ -95,7 +109,6 @@ public class EnemyCombat : MonoBehaviour
         Debug.Log("Enemy used LONG attack!");
 
         playerHealth.TakeDamage(longAttackDamage);
-
         attackCooldown.StartCooldown();
     }
 }

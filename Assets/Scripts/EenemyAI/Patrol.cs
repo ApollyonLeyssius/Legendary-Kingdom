@@ -12,6 +12,7 @@ public class Patrol : MonoBehaviour
     {
         if (patrolPoints.Length == 0)
         {
+            Debug.LogWarning("No patrol points assigned.");
             return;
         }
 
@@ -25,39 +26,20 @@ public class Patrol : MonoBehaviour
             return;
         }
 
+        UpdatePatrol();
+    }
+
+    private void UpdatePatrol()
+    {
         if (movement.HasReachedDestination())
         {
             MoveToNextPoint();
         }
     }
 
-    public void StartPatrol()
-    {
-        if (isPatrolling)
-        {
-            return;
-        }
-
-        isPatrolling = true;
-
-        MoveToNextPoint();
-    }
-
-    public void StopPatrol()
-    {
-        isPatrolling = false;
-    }
-
     private void MoveToNextPoint()
     {
-        if (patrolPoints.Length == 0)
-        {
-            return;
-        }
-
-        movement.MoveTo(
-            patrolPoints[currentPoint].position
-        );
+        movement.MoveTo(patrolPoints[currentPoint].position);
 
         currentPoint++;
 
@@ -65,5 +47,22 @@ public class Patrol : MonoBehaviour
         {
             currentPoint = 0;
         }
+    }
+
+    public void StopPatrol()
+    {
+        isPatrolling = false;
+        movement.Stop();
+    }
+
+    public void ResumePatrol()
+    {
+        if (isPatrolling)
+        {
+            return;
+        }
+
+        isPatrolling = true;
+        MoveToNextPoint();
     }
 }
