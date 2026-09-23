@@ -10,9 +10,11 @@ public class GameEventsManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            Debug.LogError("found more than one");
+            Debug.LogError("Found more than one GameEventsManager. Destroying duplicate: " + gameObject.name);
+            Destroy(gameObject);
+            return;
         }
         instance = this;
 

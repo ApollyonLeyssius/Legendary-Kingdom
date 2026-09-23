@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestSystemSO
   <id>k__BackingField: Test quest
   displayName: Test quest
-  levelRequirement: 1
+  levelRequirement: 2
   questPrerequisites: []
   questStepPrefabs:
   - {fileID: 7231533905672824390, guid: 773a39a710010bc4dae35d95021b629c, type: 3}
