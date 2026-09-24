@@ -9,12 +9,19 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float rotationSmoothTime = 0.1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -20f;
 
     [Header("Camera")]
     [SerializeField] private float mouseSensitivity = 0.15f;
     [SerializeField] private float controllerSensitivity = 120f;
+    [SerializeField] private float cameraDistance = 4.5f;
+    [SerializeField] private float cameraTargetHeight = 1.5f;
+    [SerializeField] private float cameraFollowSmoothTime = 0.06f;
+    [SerializeField] private float startingPitch = 15f;
+    [SerializeField] private float minPitch = -25f;
+    [SerializeField] private float maxPitch = 65f;
 
     private CharacterController controller;
 
@@ -23,16 +30,17 @@ public class PlayerMovement : MonoBehaviour
     private InputAction jumpAction;
 
     private float verticalVelocity;
+    private float cameraYaw;
     private float cameraPitch;
+    private float rotationVelocity;
+
+    private Vector3 cameraFocus;
+    private Vector3 cameraFollowVelocity;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        // Movement
         moveAction = new InputAction("Move", InputActionType.Value);
 
         moveAction.AddCompositeBinding("2DVector")
@@ -43,15 +51,27 @@ public class PlayerMovement : MonoBehaviour
 
         moveAction.AddBinding("<Gamepad>/leftStick");
 
-        // Mouse Look
         lookAction = new InputAction("Look", InputActionType.Value);
         lookAction.AddBinding("<Mouse>/delta");
         lookAction.AddBinding("<Gamepad>/rightStick");
 
-        // Jump
         jumpAction = new InputAction("Jump", InputActionType.Button);
         jumpAction.AddBinding("<Keyboard>/space");
         jumpAction.AddBinding("<Gamepad>/buttonSouth");
+
+        if (playerCamera == null)
+        {
+            Debug.LogError(
+                "Sleep de Main Camera naar het veld Player Camera.",
+                this
+            );
+
+            enabled = false;
+            return;
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnEnable()
@@ -59,6 +79,17 @@ public class PlayerMovement : MonoBehaviour
         moveAction.Enable();
         lookAction.Enable();
         jumpAction.Enable();
+    }
+
+    private void Start()
+    {
+        cameraYaw = transform.eulerAngles.y;
+        cameraPitch = Mathf.Clamp(startingPitch, minPitch, maxPitch);
+
+        cameraFocus = transform.position
+            + Vector3.up * cameraTargetHeight;
+
+        UpdateCameraTransform();
     }
 
     private void OnDisable()
@@ -74,64 +105,128 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    private void Move()
-    {
-        Vector2 input = moveAction.ReadValue<Vector2>();
-
-        Vector3 move =
-            transform.right * input.x +
-            transform.forward * input.y;
-
-        move = Vector3.ClampMagnitude(move, 1f);
-
-        if (controller.isGrounded)
-        {
-            if (verticalVelocity < 0)
-                verticalVelocity = -2f;
-
-            if (jumpAction.triggered)
-            {
-                verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            }
-        }
-
-        verticalVelocity += gravity * Time.deltaTime;
-        move.y = verticalVelocity;
-
-        controller.Move(move * moveSpeed * Time.deltaTime);
-    }
-
     private void Look()
     {
         Vector2 lookInput = lookAction.ReadValue<Vector2>();
 
-        float lookX;
-        float lookY;
+        bool usingMouse = lookAction.activeControl?.device is Mouse;
 
-        // Mouse input
-        if (Mouse.current != null && Mouse.current.delta.IsActuated())
+        // Muisdelta is al een verplaatsing per inputupdate.
+        // Stickinput wordt omgerekend naar graden per seconde.
+        float sensitivity = usingMouse
+            ? mouseSensitivity
+            : controllerSensitivity * Time.deltaTime;
+
+        cameraYaw += lookInput.x * sensitivity;
+        cameraPitch -= lookInput.y * sensitivity;
+
+        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+    }
+
+    private void Move()
+    {
+        Vector2 input = Vector2.ClampMagnitude(
+            moveAction.ReadValue<Vector2>(),
+            1f
+        );
+
+        // Gebruik alleen de horizontale camerahoek voor beweging.
+        Quaternion cameraHeading = Quaternion.Euler(
+            0f, cameraYaw, 0f
+        );
+
+        Vector3 moveDirection = cameraHeading
+            * new Vector3(input.x, 0f, input.y);
+
+        // Draai het personage soepel naar de looprichting.
+        if (moveDirection.sqrMagnitude > 0.001f)
         {
-            lookX = lookInput.x * mouseSensitivity;
-            lookY = lookInput.y * mouseSensitivity;
+            float targetAngle = Mathf.Atan2(
+                moveDirection.x,
+                moveDirection.z
+            ) * Mathf.Rad2Deg;
+
+            float smoothedAngle = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetAngle,
+                ref rotationVelocity,
+                rotationSmoothTime
+            );
+
+            transform.rotation = Quaternion.Euler(
+                0f, smoothedAngle, 0f
+            );
         }
-        // Controller right stick
         else
         {
-            lookX = lookInput.x * controllerSensitivity * Time.deltaTime;
-            lookY = lookInput.y * controllerSensitivity * Time.deltaTime;
+            rotationVelocity = 0f;
         }
 
-        cameraPitch -= lookY;
-        cameraPitch = Mathf.Clamp(cameraPitch, -90f, 90f);
+        if (controller.isGrounded)
+        {
+            if (verticalVelocity < 0f)
+                verticalVelocity = -2f;
 
-        playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
-        transform.Rotate(Vector3.up * lookX);
+            if (jumpAction.WasPressedThisFrame())
+            {
+                verticalVelocity = Mathf.Sqrt(
+                    jumpHeight * -2f * gravity
+                );
+            }
+        }
+
+        verticalVelocity += gravity * Time.deltaTime;
+
+        // Loopsnelheid beïnvloedt alleen horizontale beweging.
+        Vector3 velocity = moveDirection * moveSpeed;
+        velocity.y = verticalVelocity;
+
+        CollisionFlags collisions = controller.Move(
+            velocity * Time.deltaTime
+        );
+
+        // Stop opstijgen bij een botsing tegen een plafond.
+        if ((collisions & CollisionFlags.Above) != 0
+            && verticalVelocity > 0f)
+        {
+            verticalVelocity = 0f;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        Vector3 targetFocus = transform.position
+            + Vector3.up * cameraTargetHeight;
+
+        cameraFocus = Vector3.SmoothDamp(
+            cameraFocus,
+            targetFocus,
+            ref cameraFollowVelocity,
+            cameraFollowSmoothTime
+        );
+
+        UpdateCameraTransform();
+    }
+
+    private void UpdateCameraTransform()
+    {
+        Quaternion cameraRotation = Quaternion.Euler(
+            cameraPitch, cameraYaw, 0f
+        );
+
+        Vector3 cameraPosition = cameraFocus
+            - cameraRotation * Vector3.forward * cameraDistance;
+
+        playerCamera.SetPositionAndRotation(
+            cameraPosition,
+            cameraRotation
+        );
     }
 
     private void OnDestroy()
     {
-        moveAction.Dispose();
-        lookAction.Dispose();
-        jumpAction.Dispose();
+        moveAction?.Dispose();
+        lookAction?.Dispose();
+        jumpAction?.Dispose();
     }
 }
