@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private bool loadDeathSceneOnDeath;
     [SerializeField] private SceneLoader sceneLoader;
 
     private float currentHealth;
@@ -24,7 +24,8 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth, 0f);
 
         Debug.Log(
-            gameObject.name + " got hit! Damage: " + damage +
+            gameObject.name +
+            " got hit! Damage: " + damage +
             " | Health: " + currentHealth + "/" + maxHealth
         );
 
@@ -38,12 +39,20 @@ public class Health : MonoBehaviour
     {
         Debug.Log(gameObject.name + " died!");
 
-        if (sceneLoader == null)
+        if (loadDeathSceneOnDeath)
         {
-            Debug.LogError("Health is missing a SceneLoader reference!");
-            return;
-        }
+            if (sceneLoader == null)
+            {
+                Debug.LogError("Player Health is missing a SceneLoader!");
+                return;
+            }
 
-        sceneLoader.LoadDeathScene();
+            sceneLoader.LoadDeathScene();
+        }
+        else
+        {
+            Debug.Log("Destroying: " + gameObject.name);
+            Destroy(gameObject);
+        }
     }
 }

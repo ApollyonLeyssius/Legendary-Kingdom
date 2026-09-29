@@ -216,10 +216,7 @@ GameObject:
   - component: {fileID: 301013892}
   - component: {fileID: 301013893}
   - component: {fileID: 301013894}
-  - component: {fileID: 301013895}
-  - component: {fileID: 301013896}
-  - component: {fileID: 301013897}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDetection
   player: {fileID: 408077975}
-  detectionRange: 20
+  detectionRange: 10
   fieldOfView: 100
   obstacleLayer:
     serializedVersion: 2
@@ -461,10 +458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   player: {fileID: 408077975}
-  shortAttackDamage: 30
-  longAttackDamage: 20
-  heavyAttackDamage: 40
-  heavyAttackChance: 0.3
+  shortAttackDamage: 20
+  longAttackDamage: 10
 --- !u!114 &301013894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,47 +473,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackCooldown
   cooldownDuration: 5
---- !u!114 &301013895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301013881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6abb4f209c0cdd248ae444b664d52c69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 150
-  loadDeathSceneOnDeath: 0
-  sceneLoader: {fileID: 0}
---- !u!114 &301013896
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301013881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be88e00c69b3da2459ce8af9d755a5d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AttackCooldown
-  cooldownDuration: 1.5
---- !u!114 &301013897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301013881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed1a49ae99a9cba429fb6fb4515655a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HeavyAttackCooldown
-  cooldownDuration: 10
 --- !u!1 &308829380
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,9 +699,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2457856022900885622, guid: 21972b60ac6a50849834e64ba82841fa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 847963000}
-    - targetCorrespondingSourceObject: {fileID: 2457856022900885622, guid: 21972b60ac6a50849834e64ba82841fa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 847963008}
   m_SourcePrefab: {fileID: 100100000, guid: 21972b60ac6a50849834e64ba82841fa, type: 3}
 --- !u!1 &847962993 stripped
 GameObject:
@@ -767,25 +718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
-  loadDeathSceneOnDeath: 1
   sceneLoader: {fileID: 140192391}
---- !u!114 &847963008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 847962993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9821a4e950169a448962b5003d47a5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  attackDamage: 25
-  attackRange: 2
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1039857915
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,9 +7,16 @@ public class EnemyCombat : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private float shortAttackDamage = 20f;
     [SerializeField] private float longAttackDamage = 10f;
+    [SerializeField] private float heavyAttackDamage = 40f;
+
+    [Header("Heavy Attack")]
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float heavyAttackChance = 0.3f;
 
     private DistanceCombat distanceCombat;
     private AttackCooldown attackCooldown;
+    private HeavyAttackCooldown heavyAttackCooldown;
     private Health playerHealth;
 
     private bool isInAttackRange;
@@ -18,6 +25,7 @@ public class EnemyCombat : MonoBehaviour
     {
         distanceCombat = GetComponent<DistanceCombat>();
         attackCooldown = GetComponent<AttackCooldown>();
+        heavyAttackCooldown = GetComponent<HeavyAttackCooldown>();
 
         if (distanceCombat == null)
         {
@@ -27,6 +35,11 @@ public class EnemyCombat : MonoBehaviour
         if (attackCooldown == null)
         {
             Debug.LogError("Enemy is missing AttackCooldown!");
+        }
+
+        if (heavyAttackCooldown == null)
+        {
+            Debug.LogError("Enemy is missing HeavyAttackCooldown!");
         }
 
         if (player == null)
@@ -48,7 +61,8 @@ public class EnemyCombat : MonoBehaviour
         if (player == null ||
             playerHealth == null ||
             distanceCombat == null ||
-            attackCooldown == null)
+            attackCooldown == null ||
+            heavyAttackCooldown == null)
         {
             return;
         }
@@ -82,7 +96,7 @@ public class EnemyCombat : MonoBehaviour
         switch (attackType)
         {
             case DistanceCombat.AttackType.Short:
-                ShortAttack();
+                ChooseShortRangeAttack();
                 break;
 
             case DistanceCombat.AttackType.Long:
@@ -96,11 +110,27 @@ public class EnemyCombat : MonoBehaviour
         return isInAttackRange;
     }
 
+    private void ChooseShortRangeAttack()
+    {
+        bool useHeavyAttack =
+            heavyAttackCooldown.CanUseHeavyAttack() &&
+            Random.value <= heavyAttackChance;
+
+        if (useHeavyAttack)
+        {
+            HeavyAttack();
+            return;
+        }
+
+        ShortAttack();
+    }
+
     private void ShortAttack()
     {
         Debug.Log("Enemy used SHORT attack!");
 
         playerHealth.TakeDamage(shortAttackDamage);
+
         attackCooldown.StartCooldown();
     }
 
@@ -109,6 +139,17 @@ public class EnemyCombat : MonoBehaviour
         Debug.Log("Enemy used LONG attack!");
 
         playerHealth.TakeDamage(longAttackDamage);
+
         attackCooldown.StartCooldown();
+    }
+
+    private void HeavyAttack()
+    {
+        Debug.Log("Enemy used HEAVY attack!");
+
+        playerHealth.TakeDamage(heavyAttackDamage);
+
+        attackCooldown.StartCooldown();
+        heavyAttackCooldown.StartCooldown();
     }
 }
