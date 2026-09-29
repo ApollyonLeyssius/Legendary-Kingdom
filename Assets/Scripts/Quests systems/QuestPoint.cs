@@ -59,7 +59,6 @@ public class QuestPoint : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Colliger wertk");
         if (other.CompareTag("Player"))
         {
             playerIsNear = true;

@@ -30,10 +30,27 @@ public class TestQuestStep : QuestStep
 
     private void OnCoinCollected()
     {
-        coinsCollected++;
+        if (coinsCollected < coinsToComplete)
+        {
+            coinsCollected++;
+            UpdateState();
+        }
+
         if (coinsCollected >= coinsToComplete)
         {
             FinishQuestStep();
         }
+    }
+
+    private void UpdateState()
+    {
+        string state = coinsCollected.ToString();
+        Changestate(state);
+    }
+
+    protected override void SetQuestStepState(string state)
+    {
+        this.coinsCollected = System.Int32.Parse(state);
+        UpdateState();
     }
 }
