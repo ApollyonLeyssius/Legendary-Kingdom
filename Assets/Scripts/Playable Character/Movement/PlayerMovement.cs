@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform playerCamera;
+    [SerializeField] private Animator animator;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
@@ -23,6 +24,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float minPitch = -25f;
     [SerializeField] private float maxPitch = 65f;
 
+    private static readonly int WalkingTrigger =
+        Animator.StringToHash("IsWalking");
+
+    private static readonly int IdleTrigger =
+        Animator.StringToHash("IsIdle");
+
     private CharacterController controller;
 
     private InputAction moveAction;
@@ -37,9 +44,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 cameraFocus;
     private Vector3 cameraFollowVelocity;
 
+    private bool isWalking;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
 
         moveAction = new InputAction("Move", InputActionType.Value);
 
@@ -111,8 +125,6 @@ public class PlayerMovement : MonoBehaviour
 
         bool usingMouse = lookAction.activeControl?.device is Mouse;
 
-        // Muisdelta is al een verplaatsing per inputupdate.
-        // Stickinput wordt omgerekend naar graden per seconde.
         float sensitivity = usingMouse
             ? mouseSensitivity
             : controllerSensitivity * Time.deltaTime;
@@ -130,7 +142,28 @@ public class PlayerMovement : MonoBehaviour
             1f
         );
 
-        // Gebruik alleen de horizontale camerahoek voor beweging.
+        bool shouldWalk = input.sqrMagnitude > 0.001f;
+
+        if (shouldWalk != isWalking)
+        {
+            if (animator != null)
+            {
+                animator.ResetTrigger(WalkingTrigger);
+                animator.ResetTrigger(IdleTrigger);
+
+                if (shouldWalk)
+                {
+                    animator.SetTrigger(WalkingTrigger);
+                }
+                else
+                {
+                    animator.SetTrigger(IdleTrigger);
+                }
+            }
+
+            isWalking = shouldWalk;
+        }
+
         Quaternion cameraHeading = Quaternion.Euler(
             0f, cameraYaw, 0f
         );
@@ -138,7 +171,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveDirection = cameraHeading
             * new Vector3(input.x, 0f, input.y);
 
-        // Draai het personage soepel naar de looprichting.
         if (moveDirection.sqrMagnitude > 0.001f)
         {
             float targetAngle = Mathf.Atan2(
@@ -177,7 +209,6 @@ public class PlayerMovement : MonoBehaviour
 
         verticalVelocity += gravity * Time.deltaTime;
 
-        // Loopsnelheid beïnvloedt alleen horizontale beweging.
         Vector3 velocity = moveDirection * moveSpeed;
         velocity.y = verticalVelocity;
 
@@ -185,7 +216,6 @@ public class PlayerMovement : MonoBehaviour
             velocity * Time.deltaTime
         );
 
-        // Stop opstijgen bij een botsing tegen een plafond.
         if ((collisions & CollisionFlags.Above) != 0
             && verticalVelocity > 0f)
         {
