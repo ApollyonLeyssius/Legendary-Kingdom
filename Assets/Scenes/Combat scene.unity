@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 78725e1f5ca334344a77c956f7898132, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: e85c850ed8efe5741a2d9ccf55e33666, type: 3}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -548,67 +548,59 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: aa38c281-eb2c-43ff-9717-d5b5961f9fb1
+    m_ActionId: 692bff6d-7d96-4afa-9a79-070d7e48d7eb
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 2178a264-c422-4370-9e8d-fb50a844c8ec
+    m_ActionId: 3e82f7ed-b1bb-4deb-96b3-721fced2af13
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 730170796}
-        m_TargetAssemblyTypeName: PlayerAttack, Assembly-CSharp
-        m_MethodName: AttackPlayer
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 5c83a385-15ee-4a2d-a5a6-2b102a626016
-    m_ActionName: 'Player/Attack[/Mouse/leftButton]'
+      m_Calls: []
+    m_ActionId: 98424453-1349-455b-8df3-9ecc09462f4d
+    m_ActionName: 'Player/Fire[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: ceccf9f3-d61c-4c2a-97c4-3bfd2ace90fb
+    m_ActionId: c4891837-f15f-4c80-b2f1-58f2f9ce4d61
+    m_ActionName: 'Player/Open quest menu[/Keyboard/j]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8c7e5f44-2657-43fe-981f-5e337f415249
     m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 9e26b27f-d488-44cc-964f-05645e38830d
+    m_ActionId: 04451734-60ae-4d5e-b14c-3b041df17c44
     m_ActionName: 'UI/Submit[/Keyboard/enter]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 9f8f6640-4123-4eb2-8cc6-79051d4e5322
+    m_ActionId: b737fcad-3b57-4f34-9c3a-e8ebf1f62dc8
     m_ActionName: 'UI/Cancel[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 538ef7d8-044d-45cf-8ba8-394c6906f3b2
+    m_ActionId: 32a519d5-2d5b-4647-b92e-dea3534029fe
     m_ActionName: 'UI/Point[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 33dd45a7-50e7-41e6-9406-c1df992ff825
+    m_ActionId: cd37d806-ef56-406a-ade0-846d7d061f15
     m_ActionName: 'UI/Click[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e059ab36-c8f0-4a6b-9864-f077cc29537e
+    m_ActionId: 0a6fdf41-1341-447c-879f-817b95ec6b3f
     m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 4d7cadfc-124b-40f7-9195-5cec5fa70142
+    m_ActionId: 38c960a4-122f-4c99-82a5-f4dcbdcbf1cb
     m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: a7f0567b-4d9c-4511-85ba-61f09f247bd1
+    m_ActionId: ac993693-dd7f-4e21-8f0a-d0ba2ca43d9d
     m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: bf3392a1-c897-4e24-b167-16644a3141b5
+    m_ActionId: 2fc7f84d-8560-4b0f-875f-1c8f66a00019
     m_ActionName: UI/TrackedDevicePosition
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: f989c9c1-cdc4-4ac9-a9f4-15eba93349db
+    m_ActionId: 19d9cd73-266e-4a01-b00e-983ea64755ff
     m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
