@@ -771,7 +771,7 @@ MonoBehaviour:
   animator: {fileID: 1431831614}
   moveSpeed: 5
   rotationSmoothTime: 0.1
-  jumpHeight: 2
+  jumpHeight: 1
   gravity: -20
   mouseSensitivity: 1
   controllerSensitivity: 120

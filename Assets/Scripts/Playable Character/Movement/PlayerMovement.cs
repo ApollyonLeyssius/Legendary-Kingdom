@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSmoothTime = 0.1f;
-    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float jumpHeight = 1f;
     [SerializeField] private float gravity = -20f;
 
     [Header("Camera")]
@@ -29,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
 
     private static readonly int IdleTrigger =
         Animator.StringToHash("IsIdle");
+
+    private static readonly int JumpTrigger =
+        Animator.StringToHash("IsJumping");
 
     private CharacterController controller;
 
@@ -198,6 +201,18 @@ public class PlayerMovement : MonoBehaviour
         {
             if (verticalVelocity < 0f)
                 verticalVelocity = -2f;
+
+            if (jumpAction.WasPressedThisFrame())
+            {
+                verticalVelocity = Mathf.Sqrt(
+                    jumpHeight * -2f * gravity
+                );
+
+                if (animator != null)
+                {
+                    animator.SetTrigger(JumpTrigger);
+                }
+            }
 
             if (jumpAction.WasPressedThisFrame())
             {
