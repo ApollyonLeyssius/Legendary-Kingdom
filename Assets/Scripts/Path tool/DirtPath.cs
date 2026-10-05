@@ -3,9 +3,12 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-public class Path : MonoBehaviour
+public class DirtPath : MonoBehaviour
 {
-    [Header("Path Settings")]
+    [Header("Path")]
+    public Vector3[] points =
+        new Vector3[0];
+
     public float width = 4f;
 
     [Range(2, 100)]
@@ -27,42 +30,42 @@ public class Path : MonoBehaviour
 
     public float terrainOffset = 0.05f;
 
-    [Header("Control Points")]
-    public Vector3[] points = new Vector3[0];
-
     private MeshFilter meshFilter;
 
     private void Awake()
     {
-        meshFilter = GetComponent<MeshFilter>();
+        meshFilter =
+            GetComponent<MeshFilter>();
     }
 
     public void GenerateMesh()
     {
         if (meshFilter == null)
-            meshFilter = GetComponent<MeshFilter>();
+            meshFilter =
+                GetComponent<MeshFilter>();
 
         List<Vector3> centerline =
             GetCenterlinePoints();
 
         if (centerline.Count < 2)
-        {
-            meshFilter.sharedMesh = null;
             return;
-        }
 
-        Mesh mesh = BuildMesh(centerline);
+        Mesh mesh =
+            BuildMesh(centerline);
 
-        meshFilter.sharedMesh = mesh;
+        meshFilter.sharedMesh =
+            mesh;
 
         MeshRenderer renderer =
             GetComponent<MeshRenderer>();
 
         if (pathMaterial != null)
-            renderer.sharedMaterial = pathMaterial;
+            renderer.sharedMaterial =
+                pathMaterial;
     }
 
-    public List<Vector3> GetCenterlinePoints()
+    public List<Vector3>
+        GetCenterlinePoints()
     {
         List<Vector3> result =
             new List<Vector3>();
@@ -98,7 +101,8 @@ public class Path : MonoBehaviour
                  j++)
             {
                 float t =
-                    j / (float)splineResolution;
+                    j /
+                    (float)splineResolution;
 
                 result.Add(
                     PathUtility.GetPoint(
@@ -122,9 +126,12 @@ public class Path : MonoBehaviour
     private Mesh BuildMesh(
         List<Vector3> centerline)
     {
-        Mesh mesh = new Mesh();
+        Mesh mesh =
+            new Mesh();
 
-        mesh.name = "Path Mesh";
+        mesh.name =
+            gameObject.name +
+            " Mesh";
 
         int count =
             centerline.Count;
@@ -140,7 +147,9 @@ public class Path : MonoBehaviour
 
         float distance = 0f;
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0;
+             i < count;
+             i++)
         {
             Vector3 center =
                 centerline[i];
@@ -150,7 +159,8 @@ public class Path : MonoBehaviour
             if (i == 0)
             {
                 direction =
-                    centerline[1] - center;
+                    centerline[1] -
+                    center;
             }
             else if (i == count - 1)
             {
@@ -173,16 +183,12 @@ public class Path : MonoBehaviour
                     direction
                 ).normalized;
 
-            float variation =
+            float leftVariation =
                 GetEdgeVariation(
                     i,
                     distance,
                     0
                 );
-
-            float leftWidth =
-                width * 0.5f *
-                (1f + variation);
 
             float rightVariation =
                 GetEdgeVariation(
@@ -190,6 +196,10 @@ public class Path : MonoBehaviour
                     distance,
                     1000
                 );
+
+            float leftWidth =
+                width * 0.5f *
+                (1f + leftVariation);
 
             float rightWidth =
                 width * 0.5f *
@@ -271,9 +281,14 @@ public class Path : MonoBehaviour
                 rightNext;
         }
 
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uv;
+        mesh.vertices =
+            vertices;
+
+        mesh.triangles =
+            triangles;
+
+        mesh.uv =
+            uv;
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
@@ -291,8 +306,12 @@ public class Path : MonoBehaviour
 
         float noise =
             Mathf.PerlinNoise(
-                distance * edgeNoiseScale * 0.1f,
-                offset + index * 0.037f
+                distance *
+                edgeNoiseScale *
+                0.1f,
+
+                offset +
+                index * 0.037f
             );
 
         return
