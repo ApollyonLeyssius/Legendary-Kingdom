@@ -14,7 +14,7 @@ public class QuestLogScrollingList : MonoBehaviour
 
     private Dictionary<string, QuestLogButton> idToButtonMap = new Dictionary<string, QuestLogButton>();
 
-    private void Start()
+    /*private void Start()
     {
         for (int i = 0; i < 200; i++)
         {
@@ -34,7 +34,7 @@ public class QuestLogScrollingList : MonoBehaviour
                 questLogButton.button.Select();
             }
         }
-    }
+    }*/
     private void Update()
     {
 
