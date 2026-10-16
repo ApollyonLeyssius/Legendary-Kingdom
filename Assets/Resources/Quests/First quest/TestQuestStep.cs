@@ -5,6 +5,11 @@ public class TestQuestStep : QuestStep
     private int coinsCollected = 0;
     private int coinsToComplete = 5;
 
+    private void Start()
+    {
+        UpdateState();
+    }
+
     private void OnEnable()
     {
         SubscribeAllCoins();
@@ -45,7 +50,8 @@ public class TestQuestStep : QuestStep
     private void UpdateState()
     {
         string state = coinsCollected.ToString();
-        Changestate(state);
+        string status = "Collected " + coinsCollected + " / " + coinsToComplete + " coins.";
+        Changestate(state, status);
     }
 
     protected override void SetQuestStepState(string state)

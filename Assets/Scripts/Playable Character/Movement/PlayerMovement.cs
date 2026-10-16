@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 cameraFocus;
     private Vector3 cameraFollowVelocity;
-
+    private QuestLogUI questLogUI;
     private bool isWalking;
 
     private void Awake()
