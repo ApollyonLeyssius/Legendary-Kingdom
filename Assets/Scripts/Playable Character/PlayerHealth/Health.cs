@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -5,6 +6,8 @@ public class Health : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private bool loadDeathSceneOnDeath;
     [SerializeField] private SceneLoader sceneLoader;
+    [SerializeField] private Characterstate characterstate;
+        public event Action OnEnemyDeath;
 
     private float currentHealth;
 
@@ -49,10 +52,21 @@ public class Health : MonoBehaviour
 
             sceneLoader.LoadDeathScene();
         }
-        else
+        if (characterstate.Equals(Characterstate.player))
         {
             Debug.Log("Destroying: " + gameObject.name);
             Destroy(gameObject);
         }
+        if (characterstate.Equals(Characterstate.enemy)) 
+        {
+            OnEnemyDeath?.Invoke();
+            Destroy(gameObject);
+        }
     }
+}
+
+public enum Characterstate
+{
+    player,
+    enemy
 }
