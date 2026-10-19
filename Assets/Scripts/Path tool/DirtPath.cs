@@ -14,6 +14,20 @@ public class DirtPath : MonoBehaviour
     [Range(2, 100)]
     public int splineResolution = 20;
 
+    [Header("Terrain Edge Blend")]
+    public bool terrainBlend = true;
+
+    [Min(0f)]
+    public float blendWidth = 0.75f;
+
+    [Range(2, 20)]
+    public int widthSegments = 10;
+
+    [Header("Terrain")]
+    public LayerMask terrainLayer;
+
+    public float terrainOffset = 0.03f;
+
     [Header("Natural Edges")]
     public bool irregularEdges = true;
 
@@ -24,11 +38,6 @@ public class DirtPath : MonoBehaviour
 
     [Header("Material")]
     public Material pathMaterial;
-
-    [Header("Terrain")]
-    public LayerMask terrainLayer;
-
-    public float terrainOffset = 0.05f;
 
     private MeshFilter meshFilter;
 
@@ -48,7 +57,10 @@ public class DirtPath : MonoBehaviour
             GetCenterlinePoints();
 
         if (centerline.Count < 2)
+        {
+            meshFilter.sharedMesh = null;
             return;
+        }
 
         Mesh mesh =
             BuildMesh(centerline);
@@ -64,8 +76,7 @@ public class DirtPath : MonoBehaviour
                 pathMaterial;
     }
 
-    public List<Vector3>
-        GetCenterlinePoints()
+    public List<Vector3> GetCenterlinePoints()
     {
         List<Vector3> result =
             new List<Vector3>();
@@ -82,8 +93,8 @@ public class DirtPath : MonoBehaviour
         {
             Vector3 p0 =
                 i == 0
-                ? points[i]
-                : points[i - 1];
+                    ? points[i]
+                    : points[i - 1];
 
             Vector3 p1 =
                 points[i];
@@ -93,8 +104,8 @@ public class DirtPath : MonoBehaviour
 
             Vector3 p3 =
                 i + 2 >= points.Length
-                ? p2
-                : points[i + 2];
+                    ? p2
+                    : points[i + 2];
 
             for (int j = 0;
                  j < splineResolution;
@@ -117,7 +128,9 @@ public class DirtPath : MonoBehaviour
         }
 
         result.Add(
-            points[points.Length - 1]
+            points[
+                points.Length - 1
+            ]
         );
 
         return result;
@@ -133,22 +146,60 @@ public class DirtPath : MonoBehaviour
             gameObject.name +
             " Mesh";
 
-        int count =
+        int lengthCount =
             centerline.Count;
 
+        int segmentsAcross =
+            terrainBlend
+                ? Mathf.Max(
+                    6,
+                    widthSegments
+                )
+                : 2;
+
+        int widthCount =
+            segmentsAcross + 1;
+
         Vector3[] vertices =
-            new Vector3[count * 2];
+            new Vector3[
+                lengthCount *
+                widthCount
+            ];
 
         Vector2[] uv =
-            new Vector2[count * 2];
+            new Vector2[
+                lengthCount *
+                widthCount
+            ];
 
         int[] triangles =
-            new int[(count - 1) * 6];
+            new int[
+                (lengthCount - 1) *
+                segmentsAcross *
+                6
+            ];
 
-        float distance = 0f;
+        float[] distances =
+            new float[lengthCount];
+
+        float totalDistance = 0f;
+
+        for (int i = 1;
+             i < lengthCount;
+             i++)
+        {
+            totalDistance +=
+                Vector3.Distance(
+                    centerline[i - 1],
+                    centerline[i]
+                );
+
+            distances[i] =
+                totalDistance;
+        }
 
         for (int i = 0;
-             i < count;
+             i < lengthCount;
              i++)
         {
             Vector3 center =
@@ -160,19 +211,29 @@ public class DirtPath : MonoBehaviour
             {
                 direction =
                     centerline[1] -
-                    center;
+                    centerline[0];
             }
-            else if (i == count - 1)
+            else if (i ==
+                     lengthCount - 1)
             {
                 direction =
-                    center -
-                    centerline[count - 2];
+                    centerline[i] -
+                    centerline[i - 1];
             }
             else
             {
                 direction =
                     centerline[i + 1] -
                     centerline[i - 1];
+            }
+
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude <
+                0.001f)
+            {
+                direction =
+                    Vector3.forward;
             }
 
             direction.Normalize();
@@ -186,99 +247,135 @@ public class DirtPath : MonoBehaviour
             float leftVariation =
                 GetEdgeVariation(
                     i,
-                    distance,
-                    0
+                    distances[i],
+                    0f
                 );
 
             float rightVariation =
                 GetEdgeVariation(
                     i,
-                    distance,
-                    1000
+                    distances[i],
+                    1000f
                 );
 
             float leftWidth =
-                width * 0.5f *
+                width *
+                0.5f *
                 (1f + leftVariation);
 
             float rightWidth =
-                width * 0.5f *
+                width *
+                0.5f *
                 (1f + rightVariation);
 
-            Vector3 left =
-                center -
-                side * leftWidth;
+            float outerLeft =
+                -leftWidth;
 
-            Vector3 right =
-                center +
-                side * rightWidth;
+            float outerRight =
+                rightWidth;
 
-            left =
-                GetTerrainPoint(left);
-
-            right =
-                GetTerrainPoint(right);
-
-            vertices[i * 2] =
-                left;
-
-            vertices[i * 2 + 1] =
-                right;
-
-            if (i > 0)
+            if (terrainBlend)
             {
-                distance +=
-                    Vector3.Distance(
-                        centerline[i],
-                        centerline[i - 1]
-                    );
+                outerLeft -=
+                    blendWidth;
+
+                outerRight +=
+                    blendWidth;
             }
 
-            float v =
-                distance / 4f;
+            for (int x = 0;
+                 x < widthCount;
+                 x++)
+            {
+                float t =
+                    x /
+                    (float)segmentsAcross;
 
-            uv[i * 2] =
-                new Vector2(0f, v);
+                float offset =
+                    Mathf.Lerp(
+                        outerLeft,
+                        outerRight,
+                        t
+                    );
 
-            uv[i * 2 + 1] =
-                new Vector2(1f, v);
+                Vector3 localPoint =
+                    center +
+                    side * offset;
+
+                Vector3 terrainPoint =
+                    GetTerrainPoint(
+                        localPoint
+                    );
+
+                vertices[
+                    i * widthCount + x
+                ] =
+                    terrainPoint;
+
+                float pathU =
+                    Mathf.InverseLerp(
+                        -leftWidth,
+                        rightWidth,
+                        offset
+                    );
+
+                uv[
+                    i * widthCount + x
+                ] =
+                    new Vector2(
+                        pathU,
+                        distances[i] / 4f
+                    );
+            }
         }
 
         int triangleIndex = 0;
 
         for (int i = 0;
-             i < count - 1;
+             i < lengthCount - 1;
              i++)
         {
-            int leftCurrent =
-                i * 2;
+            for (int x = 0;
+                 x < segmentsAcross;
+                 x++)
+            {
+                int current =
+                    i * widthCount + x;
 
-            int rightCurrent =
-                i * 2 + 1;
+                int next =
+                    (i + 1) *
+                    widthCount + x;
 
-            int leftNext =
-                (i + 1) * 2;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current;
 
-            int rightNext =
-                (i + 1) * 2 + 1;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next;
 
-            triangles[triangleIndex++] =
-                leftCurrent;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current + 1;
 
-            triangles[triangleIndex++] =
-                leftNext;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current + 1;
 
-            triangles[triangleIndex++] =
-                rightCurrent;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next;
 
-            triangles[triangleIndex++] =
-                rightCurrent;
-
-            triangles[triangleIndex++] =
-                leftNext;
-
-            triangles[triangleIndex++] =
-                rightNext;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next + 1;
+            }
         }
 
         mesh.vertices =
@@ -328,18 +425,22 @@ public class DirtPath : MonoBehaviour
                 localPoint
             );
 
+        Vector3 rayStart =
+            worldPoint +
+            Vector3.up * 500f;
+
         Ray ray =
             new Ray(
-                worldPoint +
-                Vector3.up * 100f,
+                rayStart,
                 Vector3.down
             );
 
         if (Physics.Raycast(
             ray,
             out RaycastHit hit,
-            200f,
-            terrainLayer))
+            1000f,
+            terrainLayer,
+            QueryTriggerInteraction.Ignore))
         {
             Vector3 terrainPoint =
                 hit.point +

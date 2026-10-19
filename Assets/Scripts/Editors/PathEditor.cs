@@ -34,12 +34,14 @@ public class PathEditor : Editor
         if (GUILayout.Button("Draw Path"))
         {
             isDrawing = true;
+
             SceneView.RepaintAll();
         }
 
         if (GUILayout.Button("Stop Drawing"))
         {
             isDrawing = false;
+
             SceneView.RepaintAll();
         }
 
@@ -68,6 +70,7 @@ public class PathEditor : Editor
             return;
 
         DrawCurve();
+
         DrawPoints();
 
         if (isDrawing)
@@ -195,7 +198,9 @@ public class PathEditor : Editor
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(path);
+        EditorUtility.SetDirty(
+            path
+        );
 
         SceneView.RepaintAll();
     }
@@ -240,6 +245,21 @@ public class PathEditor : Editor
         dirtPath.splineResolution =
             path.splineResolution;
 
+        dirtPath.terrainBlend =
+            path.terrainBlend;
+
+        dirtPath.blendWidth =
+            path.blendWidth;
+
+        dirtPath.widthSegments =
+            path.widthSegments;
+
+        dirtPath.terrainLayer =
+            path.terrainLayer;
+
+        dirtPath.terrainOffset =
+            path.terrainOffset;
+
         dirtPath.irregularEdges =
             path.irregularEdges;
 
@@ -251,12 +271,6 @@ public class PathEditor : Editor
 
         dirtPath.pathMaterial =
             path.pathMaterial;
-
-        dirtPath.terrainLayer =
-            path.terrainLayer;
-
-        dirtPath.terrainOffset =
-            path.terrainOffset;
 
         MeshFilter source =
             path.GetComponent<MeshFilter>();
@@ -304,6 +318,10 @@ public class PathEditor : Editor
         isDrawing = false;
 
         SceneView.RepaintAll();
+
+        Debug.Log(
+            "Path finished and automatically saved as a prefab."
+        );
     }
 
     private void SaveAsPrefab(

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -54,18 +55,6 @@ public class DirtPathEditor : Editor
             Regenerate();
         }
 
-        if (GUILayout.Button(
-            "Add Point At End"))
-        {
-            AddPointAtEnd();
-        }
-
-        if (GUILayout.Button(
-            "Delete Selected Point"))
-        {
-            DeleteSelectedPoint();
-        }
-
         EditorGUILayout.Space();
 
         EditorGUILayout.LabelField(
@@ -84,6 +73,27 @@ public class DirtPathEditor : Editor
         {
             RevertPrefab();
         }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(
+            "Danger Zone",
+            EditorStyles.boldLabel
+        );
+
+        GUI.backgroundColor =
+            Color.red;
+
+        if (GUILayout.Button(
+            "Delete Prefab & Mesh",
+            GUILayout.Height(30)))
+        {
+            DeletePrefabAndMesh();
+        }
+
+        GUI.backgroundColor =
+            Color.white;
     }
 
     private void OnSceneGUI(
@@ -95,9 +105,11 @@ public class DirtPathEditor : Editor
         DrawCurve();
 
         if (editPoints)
+        {
             EditPoints();
 
-        DrawInsertButtons();
+            DrawSceneButtons();
+        }
     }
 
     private void DrawCurve()
@@ -153,8 +165,8 @@ public class DirtPathEditor : Editor
 
             Handles.color =
                 i == selectedPoint
-                ? Color.yellow
-                : Color.cyan;
+                    ? Color.yellow
+                    : Color.cyan;
 
             EditorGUI.BeginChangeCheck();
 
@@ -184,7 +196,9 @@ public class DirtPathEditor : Editor
 
                 path.GenerateMesh();
 
-                EditorUtility.SetDirty(path);
+                EditorUtility.SetDirty(
+                    path
+                );
 
                 SceneView.RepaintAll();
             }
@@ -212,151 +226,132 @@ public class DirtPathEditor : Editor
         }
     }
 
-    private void DrawInsertButtons()
+    private void DrawSceneButtons()
     {
-        if (!editPoints ||
-            path.points == null ||
-            path.points.Length < 2)
-        {
+        if (!editPoints)
             return;
-        }
 
-        for (int i = 0;
-             i < path.points.Length - 1;
-             i++)
+        if (path.points == null ||
+            path.points.Length == 0)
+            return;
+
+        if (selectedPoint < 0 ||
+            selectedPoint >= path.points.Length)
+            return;
+
+        Vector3 selectedWorld =
+            path.transform.TransformPoint(
+                path.points[selectedPoint]
+            );
+
+        float handleSize =
+            HandleUtility.GetHandleSize(
+                selectedWorld
+            );
+
+        float buttonSize =
+            handleSize * 0.3f;
+
+        Vector3 plusPosition =
+            selectedWorld +
+            Vector3.up *
+            handleSize *
+            0.45f;
+
+        Vector3 minusPosition =
+            selectedWorld -
+            Vector3.up *
+            handleSize *
+            0.45f;
+
+        Handles.color =
+            Color.green;
+
+        if (Handles.Button(
+            plusPosition,
+            Quaternion.identity,
+            buttonSize,
+            buttonSize,
+            Handles.CircleHandleCap))
         {
-            Vector3 a =
-                path.transform.TransformPoint(
-                    path.points[i]
-                );
-
-            Vector3 b =
-                path.transform.TransformPoint(
-                    path.points[i + 1]
-                );
-
-            Vector3 midpoint =
-                Vector3.Lerp(
-                    a,
-                    b,
-                    0.5f
-                );
-
-            float size =
-                HandleUtility.GetHandleSize(
-                    midpoint
-                ) * 0.08f;
-
-            Handles.color =
-                Color.green;
-
-            if (Handles.Button(
-                midpoint,
-                Quaternion.identity,
-                size,
-                size,
-                Handles.CircleHandleCap))
-            {
-                InsertPoint(i + 1);
-
-                break;
-            }
+            AddPointAfterSelected();
         }
+
+        Handles.Label(
+            plusPosition,
+            "+"
+        );
+
+        Handles.color =
+            Color.red;
+
+        if (Handles.Button(
+            minusPosition,
+            Quaternion.identity,
+            buttonSize,
+            buttonSize,
+            Handles.CircleHandleCap))
+        {
+            DeleteSelectedPoint();
+        }
+
+        Handles.Label(
+            minusPosition,
+            "-"
+        );
     }
 
-    private void InsertPoint(
-        int index)
+    private void AddPointAfterSelected()
     {
+        if (path.points == null ||
+            path.points.Length == 0)
+            return;
+
+        int insertIndex =
+            selectedPoint + 1;
+
         Vector3 newPoint;
 
-        if (index <= 0)
+        if (selectedPoint >=
+            path.points.Length - 1)
         {
+            Vector3 last =
+                path.points[selectedPoint];
+
+            Vector3 direction =
+                Vector3.forward;
+
+            if (path.points.Length >= 2)
+            {
+                Vector3 previous =
+                    path.points[
+                        selectedPoint - 1
+                    ];
+
+                direction =
+                    (
+                        last -
+                        previous
+                    ).normalized;
+            }
+
             newPoint =
-                path.points[0];
-        }
-        else if (
-            index >= path.points.Length)
-        {
-            newPoint =
-                path.points[
-                    path.points.Length - 1
-                ];
+                last +
+                direction * 4f;
         }
         else
         {
             newPoint =
                 Vector3.Lerp(
-                    path.points[index - 1],
-                    path.points[index],
+                    path.points[
+                        selectedPoint
+                    ],
+                    path.points[
+                        selectedPoint + 1
+                    ],
                     0.5f
                 );
         }
-
-        List<Vector3> points =
-            new List<Vector3>(
-                path.points
-            );
-
-        points.Insert(
-            index,
-            newPoint
-        );
-
-        Undo.RecordObject(
-            path,
-            "Insert Path Point"
-        );
-
-        path.points =
-            points.ToArray();
-
-        selectedPoint =
-            index;
-
-        path.GenerateMesh();
-
-        EditorUtility.SetDirty(path);
-
-        SceneView.RepaintAll();
-    }
-
-    private void AddPointAtEnd()
-    {
-        if (path.points == null ||
-            path.points.Length == 0)
-        {
-            Debug.LogWarning(
-                "The path has no points."
-            );
-
-            return;
-        }
-
-        Vector3 last =
-            path.points[
-                path.points.Length - 1
-            ];
-
-        Vector3 direction =
-            Vector3.forward;
-
-        if (path.points.Length >= 2)
-        {
-            Vector3 previous =
-                path.points[
-                    path.points.Length - 2
-                ];
-
-            direction =
-                (
-                    last -
-                    previous
-                ).normalized;
-        }
-
-        Vector3 newPoint =
-            last +
-            direction * 4f;
 
         List<Vector3> points =
             new List<Vector3>(
@@ -368,7 +363,8 @@ public class DirtPathEditor : Editor
             "Add Path Point"
         );
 
-        points.Add(
+        points.Insert(
+            insertIndex,
             newPoint
         );
 
@@ -376,27 +372,25 @@ public class DirtPathEditor : Editor
             points.ToArray();
 
         selectedPoint =
-            path.points.Length - 1;
+            insertIndex;
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(path);
+        EditorUtility.SetDirty(
+            path
+        );
 
         SceneView.RepaintAll();
     }
 
     private void DeleteSelectedPoint()
     {
-        if (selectedPoint < 0 ||
-            selectedPoint >=
-            path.points.Length)
-        {
-            Debug.LogWarning(
-                "Select a point first."
-            );
-
+        if (path.points == null)
             return;
-        }
+
+        if (selectedPoint < 0 ||
+            selectedPoint >= path.points.Length)
+            return;
 
         if (path.points.Length <= 2)
         {
@@ -433,7 +427,9 @@ public class DirtPathEditor : Editor
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(path);
+        EditorUtility.SetDirty(
+            path
+        );
 
         SceneView.RepaintAll();
     }
@@ -447,7 +443,9 @@ public class DirtPathEditor : Editor
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(path);
+        EditorUtility.SetDirty(
+            path
+        );
 
         SceneView.RepaintAll();
     }
@@ -466,7 +464,9 @@ public class DirtPathEditor : Editor
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(path);
+        EditorUtility.SetDirty(
+            path
+        );
 
         PrefabUtility.ApplyPrefabInstance(
             path.gameObject,
@@ -498,8 +498,95 @@ public class DirtPathEditor : Editor
             InteractionMode.UserAction
         );
 
-        selectedPoint = -1;
+        selectedPoint =
+            -1;
 
         SceneView.RepaintAll();
+    }
+
+    private void DeletePrefabAndMesh()
+    {
+        GameObject targetObject =
+            path.gameObject;
+
+        string prefabPath =
+            PrefabUtility
+                .GetPrefabAssetPathOfNearestInstanceRoot(
+                    targetObject
+                );
+
+        if (string.IsNullOrEmpty(
+            prefabPath))
+        {
+            EditorUtility.DisplayDialog(
+                "Not a Prefab",
+                "This DirtPath is not connected to a prefab asset.",
+                "OK"
+            );
+
+            return;
+        }
+
+        bool confirmed =
+            EditorUtility.DisplayDialog(
+                "Delete DirtPath?",
+                "This will permanently delete:\n\n" +
+                "Prefab:\n" +
+                prefabPath +
+                "\n\n" +
+                "And its generated mesh asset.\n\n" +
+                "This cannot be undone.",
+                "Delete",
+                "Cancel"
+            );
+
+        if (!confirmed)
+            return;
+
+        MeshFilter meshFilter =
+            targetObject.GetComponent<MeshFilter>();
+
+        string meshPath =
+            null;
+
+        if (meshFilter != null &&
+            meshFilter.sharedMesh != null)
+        {
+            meshPath =
+                AssetDatabase.GetAssetPath(
+                    meshFilter.sharedMesh
+                );
+        }
+
+        DestroyImmediate(
+            targetObject
+        );
+
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(
+            prefabPath) != null)
+        {
+            AssetDatabase.DeleteAsset(
+                prefabPath
+            );
+        }
+
+        if (!string.IsNullOrEmpty(
+            meshPath))
+        {
+            if (AssetDatabase.LoadAssetAtPath<Object>(
+                meshPath) != null)
+            {
+                AssetDatabase.DeleteAsset(
+                    meshPath
+                );
+            }
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            "DirtPath prefab and mesh deleted."
+        );
     }
 }

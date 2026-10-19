@@ -11,6 +11,20 @@ public class Path : MonoBehaviour
     [Range(2, 100)]
     public int splineResolution = 20;
 
+    [Header("Terrain Edge Blend")]
+    public bool terrainBlend = true;
+
+    [Min(0f)]
+    public float blendWidth = 0.75f;
+
+    [Range(2, 20)]
+    public int widthSegments = 10;
+
+    [Header("Terrain")]
+    public LayerMask terrainLayer;
+
+    public float terrainOffset = 0.03f;
+
     [Header("Natural Edges")]
     public bool irregularEdges = true;
 
@@ -22,11 +36,6 @@ public class Path : MonoBehaviour
     [Header("Material")]
     public Material pathMaterial;
 
-    [Header("Terrain")]
-    public LayerMask terrainLayer;
-
-    public float terrainOffset = 0.05f;
-
     [Header("Control Points")]
     public Vector3[] points = new Vector3[0];
 
@@ -34,13 +43,15 @@ public class Path : MonoBehaviour
 
     private void Awake()
     {
-        meshFilter = GetComponent<MeshFilter>();
+        meshFilter =
+            GetComponent<MeshFilter>();
     }
 
     public void GenerateMesh()
     {
         if (meshFilter == null)
-            meshFilter = GetComponent<MeshFilter>();
+            meshFilter =
+                GetComponent<MeshFilter>();
 
         List<Vector3> centerline =
             GetCenterlinePoints();
@@ -51,15 +62,18 @@ public class Path : MonoBehaviour
             return;
         }
 
-        Mesh mesh = BuildMesh(centerline);
+        Mesh mesh =
+            BuildMesh(centerline);
 
-        meshFilter.sharedMesh = mesh;
+        meshFilter.sharedMesh =
+            mesh;
 
         MeshRenderer renderer =
             GetComponent<MeshRenderer>();
 
         if (pathMaterial != null)
-            renderer.sharedMaterial = pathMaterial;
+            renderer.sharedMaterial =
+                pathMaterial;
     }
 
     public List<Vector3> GetCenterlinePoints()
@@ -79,8 +93,8 @@ public class Path : MonoBehaviour
         {
             Vector3 p0 =
                 i == 0
-                ? points[i]
-                : points[i - 1];
+                    ? points[i]
+                    : points[i - 1];
 
             Vector3 p1 =
                 points[i];
@@ -90,15 +104,16 @@ public class Path : MonoBehaviour
 
             Vector3 p3 =
                 i + 2 >= points.Length
-                ? p2
-                : points[i + 2];
+                    ? p2
+                    : points[i + 2];
 
             for (int j = 0;
                  j < splineResolution;
                  j++)
             {
                 float t =
-                    j / (float)splineResolution;
+                    j /
+                    (float)splineResolution;
 
                 result.Add(
                     PathUtility.GetPoint(
@@ -113,7 +128,9 @@ public class Path : MonoBehaviour
         }
 
         result.Add(
-            points[points.Length - 1]
+            points[
+                points.Length - 1
+            ]
         );
 
         return result;
@@ -122,25 +139,74 @@ public class Path : MonoBehaviour
     private Mesh BuildMesh(
         List<Vector3> centerline)
     {
-        Mesh mesh = new Mesh();
+        Mesh mesh =
+            new Mesh();
 
-        mesh.name = "Path Mesh";
+        mesh.name =
+            "Path Mesh";
 
-        int count =
+        int lengthCount =
             centerline.Count;
 
+        int segmentsAcross;
+
+        if (terrainBlend)
+        {
+            segmentsAcross =
+                Mathf.Max(
+                    6,
+                    widthSegments
+                );
+        }
+        else
+        {
+            segmentsAcross = 2;
+        }
+
+        int widthCount =
+            segmentsAcross + 1;
+
         Vector3[] vertices =
-            new Vector3[count * 2];
+            new Vector3[
+                lengthCount *
+                widthCount
+            ];
 
         Vector2[] uv =
-            new Vector2[count * 2];
+            new Vector2[
+                lengthCount *
+                widthCount
+            ];
 
         int[] triangles =
-            new int[(count - 1) * 6];
+            new int[
+                (lengthCount - 1) *
+                segmentsAcross *
+                6
+            ];
 
-        float distance = 0f;
+        float[] distances =
+            new float[lengthCount];
 
-        for (int i = 0; i < count; i++)
+        float totalDistance = 0f;
+
+        for (int i = 1;
+             i < lengthCount;
+             i++)
+        {
+            totalDistance +=
+                Vector3.Distance(
+                    centerline[i - 1],
+                    centerline[i]
+                );
+
+            distances[i] =
+                totalDistance;
+        }
+
+        for (int i = 0;
+             i < lengthCount;
+             i++)
         {
             Vector3 center =
                 centerline[i];
@@ -150,19 +216,30 @@ public class Path : MonoBehaviour
             if (i == 0)
             {
                 direction =
-                    centerline[1] - center;
+                    centerline[1] -
+                    centerline[0];
             }
-            else if (i == count - 1)
+            else if (i ==
+                     lengthCount - 1)
             {
                 direction =
-                    center -
-                    centerline[count - 2];
+                    centerline[i] -
+                    centerline[i - 1];
             }
             else
             {
                 direction =
                     centerline[i + 1] -
                     centerline[i - 1];
+            }
+
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude <
+                0.001f)
+            {
+                direction =
+                    Vector3.forward;
             }
 
             direction.Normalize();
@@ -173,107 +250,148 @@ public class Path : MonoBehaviour
                     direction
                 ).normalized;
 
-            float variation =
+            float leftVariation =
                 GetEdgeVariation(
                     i,
-                    distance,
-                    0
+                    distances[i],
+                    0f
                 );
-
-            float leftWidth =
-                width * 0.5f *
-                (1f + variation);
 
             float rightVariation =
                 GetEdgeVariation(
                     i,
-                    distance,
-                    1000
+                    distances[i],
+                    1000f
                 );
 
+            float leftWidth =
+                width *
+                0.5f *
+                (1f + leftVariation);
+
             float rightWidth =
-                width * 0.5f *
+                width *
+                0.5f *
                 (1f + rightVariation);
 
-            Vector3 left =
-                center -
-                side * leftWidth;
+            float outerLeft =
+                -leftWidth;
 
-            Vector3 right =
-                center +
-                side * rightWidth;
+            float outerRight =
+                rightWidth;
 
-            left =
-                GetTerrainPoint(left);
-
-            right =
-                GetTerrainPoint(right);
-
-            vertices[i * 2] =
-                left;
-
-            vertices[i * 2 + 1] =
-                right;
-
-            if (i > 0)
+            if (terrainBlend)
             {
-                distance +=
-                    Vector3.Distance(
-                        centerline[i],
-                        centerline[i - 1]
-                    );
+                outerLeft -=
+                    blendWidth;
+
+                outerRight +=
+                    blendWidth;
             }
 
-            float v =
-                distance / 4f;
+            for (int x = 0;
+                 x < widthCount;
+                 x++)
+            {
+                float t =
+                    x /
+                    (float)segmentsAcross;
 
-            uv[i * 2] =
-                new Vector2(0f, v);
+                float offset =
+                    Mathf.Lerp(
+                        outerLeft,
+                        outerRight,
+                        t
+                    );
 
-            uv[i * 2 + 1] =
-                new Vector2(1f, v);
+                Vector3 localPoint =
+                    center +
+                    side * offset;
+
+                Vector3 terrainPoint =
+                    GetTerrainPoint(
+                        localPoint
+                    );
+
+                vertices[
+                    i * widthCount + x
+                ] =
+                    terrainPoint;
+
+                float pathU =
+                    Mathf.InverseLerp(
+                        -leftWidth,
+                        rightWidth,
+                        offset
+                    );
+
+                uv[
+                    i * widthCount + x
+                ] =
+                    new Vector2(
+                        pathU,
+                        distances[i] / 4f
+                    );
+            }
         }
 
         int triangleIndex = 0;
 
         for (int i = 0;
-             i < count - 1;
+             i < lengthCount - 1;
              i++)
         {
-            int leftCurrent =
-                i * 2;
+            for (int x = 0;
+                 x < segmentsAcross;
+                 x++)
+            {
+                int current =
+                    i * widthCount + x;
 
-            int rightCurrent =
-                i * 2 + 1;
+                int next =
+                    (i + 1) *
+                    widthCount + x;
 
-            int leftNext =
-                (i + 1) * 2;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current;
 
-            int rightNext =
-                (i + 1) * 2 + 1;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next;
 
-            triangles[triangleIndex++] =
-                leftCurrent;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current + 1;
 
-            triangles[triangleIndex++] =
-                leftNext;
+                triangles[
+                    triangleIndex++
+                ] =
+                    current + 1;
 
-            triangles[triangleIndex++] =
-                rightCurrent;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next;
 
-            triangles[triangleIndex++] =
-                rightCurrent;
-
-            triangles[triangleIndex++] =
-                leftNext;
-
-            triangles[triangleIndex++] =
-                rightNext;
+                triangles[
+                    triangleIndex++
+                ] =
+                    next + 1;
+            }
         }
 
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uv;
+        mesh.vertices =
+            vertices;
+
+        mesh.triangles =
+            triangles;
+
+        mesh.uv =
+            uv;
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
@@ -291,8 +409,12 @@ public class Path : MonoBehaviour
 
         float noise =
             Mathf.PerlinNoise(
-                distance * edgeNoiseScale * 0.1f,
-                offset + index * 0.037f
+                distance *
+                edgeNoiseScale *
+                0.1f,
+
+                offset +
+                index * 0.037f
             );
 
         return
@@ -309,18 +431,22 @@ public class Path : MonoBehaviour
                 localPoint
             );
 
+        Vector3 rayStart =
+            worldPoint +
+            Vector3.up * 500f;
+
         Ray ray =
             new Ray(
-                worldPoint +
-                Vector3.up * 100f,
+                rayStart,
                 Vector3.down
             );
 
         if (Physics.Raycast(
             ray,
             out RaycastHit hit,
-            200f,
-            terrainLayer))
+            1000f,
+            terrainLayer,
+            QueryTriggerInteraction.Ignore))
         {
             Vector3 terrainPoint =
                 hit.point +
