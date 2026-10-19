@@ -493,6 +493,7 @@ MonoBehaviour:
   maxHealth: 150
   loadDeathSceneOnDeath: 0
   sceneLoader: {fileID: 0}
+  characterstate: 1
 --- !u!114 &301013896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1264,10 +1265,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8389806432217112870, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
+      propertyPath: attackRange
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389806432217112870, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 8743958465577475316, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
       propertyPath: sceneLoader
       value: 
       objectReference: {fileID: 140192391}
+    - target: {fileID: 8743958465577475316, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
+      propertyPath: characterstate
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9182087340430708090, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
       propertyPath: m_Name
       value: Player
