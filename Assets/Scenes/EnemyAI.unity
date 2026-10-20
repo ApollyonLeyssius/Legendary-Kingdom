@@ -219,6 +219,8 @@ GameObject:
   - component: {fileID: 301013895}
   - component: {fileID: 301013896}
   - component: {fileID: 301013897}
+  - component: {fileID: 301013899}
+  - component: {fileID: 301013898}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -520,6 +522,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeavyAttackCooldown
   cooldownDuration: 10
+--- !u!114 &301013898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301013881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 164e6a22ede5a4e41a0703c609b25575, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AdaptiveAI
+  repeatedActionsRequired: 3
+--- !u!114 &301013899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301013881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25df660e5b397c84eb1ba3bebe9c7191, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCounter
+  player: {fileID: 408077975}
+  counterDamage: 15
+  counterRange: 2.5
 --- !u!1 &308829380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,11 +1297,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8389806432217112870, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
       propertyPath: attackRange
-      value: 100
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389806432217112870, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
+      propertyPath: attackDamage
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8389806432217112870, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
       propertyPath: enemyLayer.m_Bits
       value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743958465577475316, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
+      propertyPath: maxHealth
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8743958465577475316, guid: 5304d6a92cfabec4eb02450fdaab6048, type: 3}
       propertyPath: sceneLoader
