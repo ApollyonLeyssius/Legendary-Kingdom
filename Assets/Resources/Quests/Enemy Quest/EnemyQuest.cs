@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class EnemyQuest : QuestStep
 {
-    private int EnemiesToKill = 0;
-    private int EnemiesKilled = 2;
+    private int EnemiesToKill = 2;
+    private int EnemiesKilled = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
