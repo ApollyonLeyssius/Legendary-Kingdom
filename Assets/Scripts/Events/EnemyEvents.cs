@@ -1,30 +1,20 @@
 using UnityEngine;
+using System;
 
-public class EnemyKillQuestListener : MonoBehaviour
+public class EnemyEvents
 {
-    [SerializeField] private int requiredKills = 3;
-
-    private int currentKills;
-
-    private void OnEnable()
+    public event Action EnemyKilled;
+    public EnemyEvents()
     {
         Health.OnEnemyDeath += HandleEnemyDeath;
     }
-
-    private void OnDisable()
+    public void Dispose()
     {
         Health.OnEnemyDeath -= HandleEnemyDeath;
     }
 
     private void HandleEnemyDeath()
     {
-        currentKills++;
-
-        Debug.Log("Enemies defeated: " + currentKills);
-
-        if (currentKills >= requiredKills)
-        {
-            Debug.Log("Quest completed!");
-        }
+        EnemyKilled?.Invoke();
     }
 }

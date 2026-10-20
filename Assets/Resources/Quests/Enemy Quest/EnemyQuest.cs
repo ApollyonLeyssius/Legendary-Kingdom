@@ -9,20 +9,34 @@ public class EnemyQuest : QuestStep
     {
         UpdateState();
     }
-
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        GameEventsManager.instance.enemyEvents.EnemyKilled += EnemyKilled;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.enemyEvents.EnemyKilled -= EnemyKilled;
     }
     private void EnemyKilled()
     {
+        if (EnemiesKilled >= EnemiesToKill)
+        {
+            return;
+        }
+        EnemiesKilled++;
 
+        UpdateState();
+
+        if (EnemiesKilled >= EnemiesToKill)
+        {
+            FinishQuestStep();
+        }
     }
     private void UpdateState()
     {
-        string state = EnemiesToKill.ToString();
-        string status = "Collected " + EnemiesToKill + " / " + EnemiesKilled + " coins.";
+        string state = EnemiesKilled.ToString();
+        string status = "Defeated " + EnemiesKilled + " / " + EnemiesToKill + " enemies";
         Changestate(state, status);
     }
     protected override void SetQuestStepState(string state)
