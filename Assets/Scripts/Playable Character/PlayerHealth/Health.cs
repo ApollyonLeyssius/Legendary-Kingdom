@@ -7,7 +7,7 @@ public class Health : MonoBehaviour
     [SerializeField] private bool loadDeathSceneOnDeath;
     [SerializeField] private SceneLoader sceneLoader;
     [SerializeField] private Characterstate characterstate;
-        public event Action OnEnemyDeath;
+    public static event Action OnEnemyDeath;
 
     private float currentHealth;
 
@@ -42,31 +42,38 @@ public class Health : MonoBehaviour
     {
         Debug.Log(gameObject.name + " died!");
 
-        if (loadDeathSceneOnDeath)
+        if (characterstate == Characterstate.player)
         {
-            if (sceneLoader == null)
+            if (loadDeathSceneOnDeath)
             {
-                Debug.LogError("Player Health is missing a SceneLoader!");
+                if (sceneLoader == null)
+                {
+                    Debug.LogError("Player Health is missing a SceneLoader!");
+                    return;
+                }
+
+                sceneLoader.LoadDeathScene();
                 return;
             }
 
-            sceneLoader.LoadDeathScene();
-        }
-        if (characterstate.Equals(Characterstate.player))
-        {
-            Debug.Log("Destroying: " + gameObject.name);
             Destroy(gameObject);
+            return;
         }
-        if (characterstate.Equals(Characterstate.enemy)) 
+
+        if (characterstate == Characterstate.enemy)
         {
+            Debug.Log("Enemy death event triggered: " + gameObject.name);
+
             OnEnemyDeath?.Invoke();
+
             Destroy(gameObject);
+            return;
         }
     }
-}
 
-public enum Characterstate
-{
-    player,
-    enemy
+    public enum Characterstate
+    {
+        player,
+        enemy
+    }
 }

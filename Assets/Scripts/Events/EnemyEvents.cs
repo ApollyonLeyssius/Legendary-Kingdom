@@ -1,16 +1,30 @@
 using UnityEngine;
 
-public class EnemyEvents : MonoBehaviour
+public class EnemyKillQuestListener : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private int requiredKills = 3;
+
+    private int currentKills;
+
+    private void OnEnable()
     {
-        
+        Health.OnEnemyDeath += HandleEnemyDeath;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        Health.OnEnemyDeath -= HandleEnemyDeath;
+    }
+
+    private void HandleEnemyDeath()
+    {
+        currentKills++;
+
+        Debug.Log("Enemies defeated: " + currentKills);
+
+        if (currentKills >= requiredKills)
+        {
+            Debug.Log("Quest completed!");
+        }
     }
 }
