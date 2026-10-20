@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CapsuleCollider))]
 public class QuestPoint : MonoBehaviour
 {
+    [Header("Dialogue")]
+    [SerializeField] private string dialogueKnotName;
     [Header("Quest")]
     [SerializeField] private QuestSystemSO questInfoForPoint;
 
@@ -27,16 +29,26 @@ public class QuestPoint : MonoBehaviour
         {
             return;
         }
-        if (currentQuestState.Equals(QuestState.CAN_START) && startPoint)
+
+        if (!dialogueKnotName.Equals(""))
         {
-            Debug.Log("started");
-            GameEventsManager.instance.questEvents.StartQuest(questId);
+            GameEventsManager.instance.dialogueEvents.EnterDialogue(dialogueKnotName);
         }
 
-        else if (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint)
+        else
         {
-            GameEventsManager.instance.questEvents.FinishQuest(questId);
+            if (currentQuestState.Equals(QuestState.CAN_START) && startPoint)
+            {
+                Debug.Log("started");
+                GameEventsManager.instance.questEvents.StartQuest(questId);
+            }
+
+            else if (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint)
+            {
+                GameEventsManager.instance.questEvents.FinishQuest(questId);
+            }
         }
+
     }
 
     private void OnEnable()

@@ -1359,6 +1359,51 @@ MonoBehaviour:
   experienceRewardsText: {fileID: 507307401}
   levelRequirementsText: {fileID: 1304019049}
   questRequirementsText: {fileID: 346065697}
+--- !u!1 &704630338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 704630339}
+  - component: {fileID: 704630340}
+  m_Layer: 0
+  m_Name: DialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &704630339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704630338}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1008857005}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &704630340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704630338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 773842aabff35ed45bf7d7550f21fd28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
+  inkJson: {fileID: 0}
 --- !u!1 &707505784
 GameObject:
   m_ObjectHideFlags: 0
@@ -1616,6 +1661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0bb792b05ff3e8499b93f23e5c6095c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestPoint
+  dialogueKnotName: 
   questInfoForPoint: {fileID: 11400000, guid: eadc31497269cd54b91dc8a09a27d3d7, type: 2}
   startPoint: 0
   finishPoint: 1
@@ -1816,6 +1862,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1024891905}
+  - {fileID: 704630339}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1008857006
@@ -3746,6 +3793,10 @@ PrefabInstance:
     - target: {fileID: 707917631026992326, guid: b843affa56751db4cacb614e8c411d3b, type: 3}
       propertyPath: finishPoint
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 707917631026992326, guid: b843affa56751db4cacb614e8c411d3b, type: 3}
+      propertyPath: dialogueKnotName
+      value: npc
       objectReference: {fileID: 0}
     - target: {fileID: 2724497735344752660, guid: b843affa56751db4cacb614e8c411d3b, type: 3}
       propertyPath: m_LocalPosition.y

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8da907680b44a742bbf35a8809aa7e9, type: 3}
   m_Name: Enemy Quest
   m_EditorClassIdentifier: Assembly-CSharp::QuestSystemSO
-  <id>k__BackingField: 
-  displayName: 
-  levelRequirement: 0
+  <id>k__BackingField: Enemy Quest
+  displayName: Enemy Quest
+  levelRequirement: 3
   questPrerequisites: []
   questStepPrefabs: []
   goldReward: 0

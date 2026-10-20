@@ -1,4 +1,5 @@
 === npc ===
-Hey homo!
-Ik ben het, Dion!
+Ik ben B de NPC!
+This is a choice that can only be chosen once
+Aangenaam!
 -> END
