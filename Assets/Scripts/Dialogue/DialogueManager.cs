@@ -21,6 +21,15 @@ public class DialogueManager : MonoBehaviour
     {
         GameEventsManager.instance.dialogueEvents.onEnterDialogue -= EnterDialogue;
     }
+
+    private void SubmitPressed()
+    {
+        if (!dialoguePlaying)
+        {
+            return;
+        }
+        ContinueOrExitStory();
+    }
     private void EnterDialogue(string knotName)
     {
         if (dialoguePlaying)
