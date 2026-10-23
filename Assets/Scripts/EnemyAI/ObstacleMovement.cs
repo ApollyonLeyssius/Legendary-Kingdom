@@ -9,6 +9,9 @@ public class ObstacleMovement : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private float movementThreshold = 0.1f;
 
+    [Header("Debugging")]
+    [SerializeField] private bool showDebugMessages = true;
+
     private NavMeshAgent agent;
 
     private void Awake()
@@ -22,7 +25,42 @@ public class ObstacleMovement : MonoBehaviour
 
         if (animator == null)
         {
-            Debug.LogWarning("Enemy Animator is missing!");
+            Debug.LogWarning(
+                gameObject.name + ": Animator is missing!"
+            );
+        }
+    }
+
+    private void Start()
+    {
+        if (!agent.isOnNavMesh)
+        {
+            Debug.LogError(
+                gameObject.name + " is NOT on the NavMesh!"
+            );
+            return;
+        }
+
+        Debug.Log(
+            gameObject.name + " is correctly on the NavMesh!"
+        );
+
+        Debug.Log(
+            gameObject.name + " NavMeshAgent Speed: " + agent.speed
+        );
+
+        if (agent.isStopped)
+        {
+            Debug.LogWarning(
+                gameObject.name + " has a STOPPED NavMeshAgent!"
+            );
+        }
+
+        if (agent.speed <= 0f)
+        {
+            Debug.LogWarning(
+                gameObject.name + " has a NavMeshAgent speed of 0!"
+            );
         }
     }
 
@@ -55,10 +93,44 @@ public class ObstacleMovement : MonoBehaviour
     {
         if (!agent.isOnNavMesh)
         {
+            Debug.LogWarning(
+                gameObject.name +
+                " cannot move: Not on NavMesh!"
+            );
             return;
         }
 
-        agent.SetDestination(target);
+        if (agent.isStopped)
+        {
+            if (showDebugMessages)
+            {
+                Debug.LogWarning(
+                    gameObject.name +
+                    " was stopped! Resuming movement."
+                );
+            }
+
+            agent.isStopped = false;
+        }
+
+        bool pathRequested = agent.SetDestination(target);
+
+        if (!pathRequested)
+        {
+            Debug.LogWarning(
+                gameObject.name +
+                " failed to request a path!"
+            );
+            return;
+        }
+
+        if (showDebugMessages)
+        {
+            Debug.Log(
+                gameObject.name +
+                " moving towards: " + target
+            );
+        }
     }
 
     public void Stop()
@@ -69,6 +141,13 @@ public class ObstacleMovement : MonoBehaviour
         }
 
         agent.ResetPath();
+
+        if (showDebugMessages)
+        {
+            Debug.Log(
+                gameObject.name + " stopped moving."
+            );
+        }
     }
 
     public bool HasReachedDestination()
