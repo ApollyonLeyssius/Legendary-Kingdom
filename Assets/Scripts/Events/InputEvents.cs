@@ -10,13 +10,22 @@ public class InputEvents
         this.inputEventContext = newContxt;
     }
 
-    public event Action<InputEventContext> onSubmitPressed;
-    public void OnSubmitPressed()
+    public event Action<Vector2> OnMovePressed;
+    public void MovePressed(Vector2 moveDir)
     {
-        if (onSubmitPressed != null)
-        {
-            //OnSubmitPressed(this.inputEventContext);
-        }
+        OnMovePressed?.Invoke(moveDir);
+    }
+
+    public event Action<InputEventContext> OnSubmitPressed;
+    public void SubmitPressed()
+    {
+        OnSubmitPressed?.Invoke(this.inputEventContext);
+    }
+
+    public event Action onQuestLogTogglePressed;
+    public void QuestLogTogglePressed()
+    {
+        onQuestLogTogglePressed?.Invoke();
     }
 
 

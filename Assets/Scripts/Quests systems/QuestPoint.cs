@@ -23,9 +23,9 @@ public class QuestPoint : MonoBehaviour
         questId = questInfoForPoint.id;
         questIcon = GetComponentInChildren<QuestIcon>();
     }
-    public void BeginQuest(InputAction.CallbackContext context)
+    private void BeginQuest(InputEventContext inputEventContext)
     {
-        if (!playerIsNear)
+        if (!playerIsNear || !inputEventContext.Equals(InputEventContext.DEFAULT))
         {
             return;
         }
@@ -54,11 +54,13 @@ public class QuestPoint : MonoBehaviour
     private void OnEnable()
     {
         GameEventsManager.instance.questEvents.onQuestStateChange += QuestStateChange;
+        GameEventsManager.instance.inputEvents.OnSubmitPressed += BeginQuest;
     }
 
     private void OnDisable()
     {
         GameEventsManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
+        GameEventsManager.instance.inputEvents.OnSubmitPressed -= BeginQuest;
     }
 
     private void QuestStateChange(Quest quest)

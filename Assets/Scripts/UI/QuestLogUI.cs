@@ -21,14 +21,16 @@ public class QuestLogUI : MonoBehaviour
     private void OnEnable()
     {
         GameEventsManager.instance.questEvents.onQuestStateChange += QuestStateChange;
+        GameEventsManager.instance.inputEvents.onQuestLogTogglePressed += QuestLogTogglePressed;
     }
 
     private void OnDisable()
     {
         GameEventsManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
+        GameEventsManager.instance.inputEvents.onQuestLogTogglePressed -= QuestLogTogglePressed;
     }
 
-    public void QuestLogTogglePressed(InputAction.CallbackContext context)
+    private void QuestLogTogglePressed()
     {
         if (contentParent.activeInHierarchy)
         {
