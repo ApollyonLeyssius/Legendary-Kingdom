@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using Ink.Runtime;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
+using Unity.VisualScripting;
 public class DialogueEvents
 {
     public event Action<string> onEnterDialogue;
@@ -46,6 +48,15 @@ public class DialogueEvents
         if (onUpdateChoiceIndex != null)
         {
             onUpdateChoiceIndex(choiceIndex);
+        }
+    }
+
+    public event Action<string, Ink.Runtime.Object> onUpdateInkDialogueVariable;
+    public void UpdateInkDialogueVariable(string name, Ink.Runtime.Object value)
+    {
+        if (onUpdateInkDialogueVariable != null)
+        {
+            onUpdateInkDialogueVariable(name, value);
         }
     }
 }

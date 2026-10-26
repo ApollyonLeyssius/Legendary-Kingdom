@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8da907680b44a742bbf35a8809aa7e9, type: 3}
-  m_Name: DefeatEnemies
+  m_Name: EnemyQuest
   m_EditorClassIdentifier: Assembly-CSharp::QuestSystemSO
-  <id>k__BackingField: DefeatEnemies
-  displayName: Defeat Enemies
-  levelRequirement: 0
-  questPrerequisites: []
-  questStepPrefabs: []
-  goldReward: 0
-  experienceReward: 0
+  <id>k__BackingField: Enemy Quest
+  displayName: Enemy Quest
+  levelRequirement: 1
+  questPrerequisites:
+  - {fileID: 11400000, guid: eadc31497269cd54b91dc8a09a27d3d7, type: 2}
+  questStepPrefabs:
+  - {fileID: 1199574401221155433, guid: cda77dacc7a42984ab90609464c750b7, type: 3}
+  goldReward: 2
+  experienceReward: 3

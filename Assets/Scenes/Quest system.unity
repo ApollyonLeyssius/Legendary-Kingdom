@@ -1537,7 +1537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 773842aabff35ed45bf7d7550f21fd28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
-  inkJson: {fileID: 4900000, guid: fa693a6920096fd4fb44265668819bf4, type: 3}
+  inkJson: {fileID: 4900000, guid: 66469613c0062344da8ccf403e02f6b1, type: 3}
 --- !u!1 &707505784
 GameObject:
   m_ObjectHideFlags: 0
@@ -1795,7 +1795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0bb792b05ff3e8499b93f23e5c6095c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestPoint
-  dialogueKnotName: 
+  dialogueKnotName: collectCoinsFinish
   questInfoForPoint: {fileID: 11400000, guid: eadc31497269cd54b91dc8a09a27d3d7, type: 2}
   startPoint: 0
   finishPoint: 1
@@ -2131,7 +2131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestManager
   LoadQuestState: 1
-  currentPlayerLevel: 1
+  currentPlayerLevel: 2
 --- !u!1 &1041069482
 GameObject:
   m_ObjectHideFlags: 0
@@ -4355,7 +4355,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1843607864800843734, guid: 0ad06fa8295654941b47d4bd1de35595, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.59
+      value: 7.41
       objectReference: {fileID: 0}
     - target: {fileID: 2944966823617666606, guid: 0ad06fa8295654941b47d4bd1de35595, type: 3}
       propertyPath: m_Name

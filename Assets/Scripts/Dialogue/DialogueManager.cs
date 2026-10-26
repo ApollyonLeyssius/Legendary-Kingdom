@@ -12,11 +12,14 @@ public class DialogueManager : MonoBehaviour
 
     private InkExternalFunctions inkExternalFunctions;
 
+    private InkDialogueVariables inkDialogueVariables;
+
     private void Awake()
     {
         story = new Story(inkJson.text);
         inkExternalFunctions = new InkExternalFunctions();
         inkExternalFunctions.Bind(story);
+        inkDialogueVariables = new InkDialogueVariables(story);
     }
 
     private void OnDestroy()
@@ -28,6 +31,8 @@ public class DialogueManager : MonoBehaviour
         GameEventsManager.instance.dialogueEvents.onEnterDialogue += EnterDialogue;
         GameEventsManager.instance.inputEvents.OnSubmitPressed += SubmitPressed;
         GameEventsManager.instance.dialogueEvents.onUpdateChoiceIndex += UpdateChoiceIndex;
+        GameEventsManager.instance.dialogueEvents.onUpdateInkDialogueVariable += UpdateInkDialogueVariable;
+        GameEventsManager.instance.questEvents.onQuestStateChange += QuestStateChange;
         
     }
     private void OnDisable()
@@ -35,6 +40,23 @@ public class DialogueManager : MonoBehaviour
         GameEventsManager.instance.dialogueEvents.onEnterDialogue -= EnterDialogue;
         GameEventsManager.instance.inputEvents.OnSubmitPressed -= SubmitPressed;
         GameEventsManager.instance.dialogueEvents.onUpdateChoiceIndex -= UpdateChoiceIndex;
+        GameEventsManager.instance.dialogueEvents.onUpdateInkDialogueVariable -= UpdateInkDialogueVariable;
+        GameEventsManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
+    }
+
+    private void QuestStateChange(Quest quest)
+    {
+        string variableName = quest.info.id + "State";
+        Debug.Log($"Updating Ink var '{variableName}' to '{quest.state}'");
+        GameEventsManager.instance.dialogueEvents.UpdateInkDialogueVariable(
+            variableName,
+            new StringValue(quest.state.ToString())
+        );
+    }
+
+    private void UpdateInkDialogueVariable(string name, Ink.Runtime.Object value)
+    {
+        inkDialogueVariables.UpdateVariableState(name, value);
     }
 
     private void UpdateChoiceIndex(int choiceIndex)
@@ -73,6 +95,8 @@ public class DialogueManager : MonoBehaviour
         {
             Debug.LogWarning("Knot name was the empty string when entering dialogue.");
         }
+
+        inkDialogueVariables.SyncVariablesAndStartListening(story);
 
         ContinueOrExitStory();
     }
@@ -119,6 +143,8 @@ public class DialogueManager : MonoBehaviour
         GameEventsManager.instance.inputEvents.ChangeInputEventContext(InputEventContext.DEFAULT);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        inkDialogueVariables.StopListening(story);
 
         story.ResetState();
     }

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8da907680b44a742bbf35a8809aa7e9, type: 3}
-  m_Name: Test quest
+  m_Name: CollectCoinsQuest
   m_EditorClassIdentifier: Assembly-CSharp::QuestSystemSO
-  <id>k__BackingField: Test quest
-  displayName: Test quest
-  levelRequirement: 1
+  <id>k__BackingField: Testquest
+  displayName: Collect coins
+  levelRequirement: 2
   questPrerequisites: []
   questStepPrefabs:
   - {fileID: 7231533905672824390, guid: 773a39a710010bc4dae35d95021b629c, type: 3}
