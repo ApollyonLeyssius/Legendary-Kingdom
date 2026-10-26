@@ -1,8 +1,11 @@
+
 using UnityEngine;
 
 public class EnemyCombat : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Transform player;
+    [SerializeField] private Animator animator;
 
     [Header("Damage")]
     [SerializeField] private float shortAttackDamage = 20f;
@@ -27,6 +30,11 @@ public class EnemyCombat : MonoBehaviour
         attackCooldown = GetComponent<AttackCooldown>();
         heavyAttackCooldown = GetComponent<HeavyAttackCooldown>();
 
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
         if (distanceCombat == null)
         {
             Debug.LogError("Enemy is missing DistanceCombat!");
@@ -42,9 +50,14 @@ public class EnemyCombat : MonoBehaviour
             Debug.LogError("Enemy is missing HeavyAttackCooldown!");
         }
 
+        if (animator == null)
+        {
+            Debug.LogWarning("Enemy is missing Animator!");
+        }
+
         if (player == null)
         {
-            Debug.LogError("Player has not been assigned to EnemyCombat!");
+            Debug.LogError("Player has not been assigned!");
             return;
         }
 
@@ -127,6 +140,8 @@ public class EnemyCombat : MonoBehaviour
 
     private void ShortAttack()
     {
+        PlayPunchAnimation();
+
         Debug.Log("Enemy used SHORT attack!");
 
         playerHealth.TakeDamage(shortAttackDamage);
@@ -145,11 +160,23 @@ public class EnemyCombat : MonoBehaviour
 
     private void HeavyAttack()
     {
+        PlayPunchAnimation();
+
         Debug.Log("Enemy used HEAVY attack!");
 
         playerHealth.TakeDamage(heavyAttackDamage);
 
         attackCooldown.StartCooldown();
         heavyAttackCooldown.StartCooldown();
+    }
+
+    private void PlayPunchAnimation()
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        animator.SetTrigger("IsPunching");
     }
 }
