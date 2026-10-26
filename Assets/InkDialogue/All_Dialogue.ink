@@ -6,7 +6,7 @@ EXTERNAL FinishQuest(questId)
 
 === collectCoinsStart ===
 Ewa Zebi!!!!!
-Kan je mijn die hayek grote coins geven?
+Kan je mij die hayek grote coins geven?
 * [Ewa ja!]
     ~ StartQuest("Test quest")
     Dankjewel niffo!
