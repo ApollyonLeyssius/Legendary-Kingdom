@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8da907680b44a742bbf35a8809aa7e9, type: 3}
   m_Name: CollectCoinsQuest
   m_EditorClassIdentifier: Assembly-CSharp::QuestSystemSO
-  <id>k__BackingField: Testquest
+  <id>k__BackingField: CollectCoinsQuest
   displayName: Collect coins
   levelRequirement: 2
   questPrerequisites: []

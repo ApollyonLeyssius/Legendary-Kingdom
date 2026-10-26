@@ -1,6 +1,6 @@
 === enemyQuestStart ===
-{ EnemyQuestQuestState:
- - - "REQUIREMENTS_NOT_MET": -> requirementsNotMet
+{ EnemyQuestState:
+- "REQUIREMENTS_NOT_MET": -> requirementsNotMet
 - "CAN_START": -> canStart
 - "IN_PROGRESS": -> inProgress
 - "CAN_FINISH": -> canFinish
@@ -19,7 +19,7 @@ Zou je ze voor mij kunnen slimen?
 * [Ik help je wel hoor Ace Brandligt uit Zandvoort]
 ~StartQuest("EnemyQuest")
 Dankjewel... Ik ga nu larpen!
-[Dit is niet mijn winkel vriend!]
+* [Dit is niet mijn winkel vriend!]
 Fuck jou man! Tyfus lijer!
 - -> END
 
