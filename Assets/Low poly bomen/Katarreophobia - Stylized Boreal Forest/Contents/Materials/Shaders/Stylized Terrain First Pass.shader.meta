@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 800e642f4406bb2418fa41ba843d65d6
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266406
+  packageName: 'Katarreophobia: Stylized Boreal Forest'
+  packageVersion: 1.1.0
+  assetPath: Assets/Distant Lands/Katarreophobia - Stylized Boreal Forest/Contents/Materials/Shaders/Stylized
+    Terrain First Pass.shader
+  uploadId: 692806
