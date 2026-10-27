@@ -9,18 +9,20 @@
 }
 
 = requirementsNotMet
-H-hey... Ik ben Ace Brandligt and ik woon in Zandvoort...
+H-hey... Ik ben Ace Brandligt en ik woon in Zandvoort...
 Betaal eerst even die man voordat je mij helpt...
 -> END
 
 = canStart
+H-hey...! Ik... ik ben Ace Brandligt en k woon in Zandvoort...
+Ik woon in de buurt van het station en ik hou van larpen...
 Hey... die Marokkanen hebben mijn gebost...
 Zou je ze voor mij kunnen slimen?
 * [Ik help je wel hoor Ace Brandligt uit Zandvoort]
 ~StartQuest("EnemyQuest")
 Dankjewel... Ik ga nu larpen!
 * [Dit is niet mijn winkel vriend!]
-Fuck jou man! Tyfus lijer!
+Hoezo doe je zo?
 - -> END
 
 = inProgress
