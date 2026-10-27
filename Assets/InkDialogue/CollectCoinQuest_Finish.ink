@@ -12,7 +12,7 @@ Ik ben kanker stoned.
 Die guy daar moet mij nog 5 euro geven
 * [Niet mijn probleem neef. Ik ben tantoe skeer.]
 -> END
-* { CollectCoinsQuestState == "CAN_FINISH"} [Hier broeder ga maar asi kopen.]
+* { CollectCoinsQuestState == "CAN_FINISH"} [Hier broeder ga maar assie kopen.]
 ~ FinishQuest("CollectCoinsQuest")
 Ey bro dankjewel.
 -> END
