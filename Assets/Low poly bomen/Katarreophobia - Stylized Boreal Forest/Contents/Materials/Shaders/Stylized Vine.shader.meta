@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b3990ea773917544a898391f87ee8a60
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266406
+  packageName: 'Katarreophobia: Stylized Boreal Forest'
+  packageVersion: 1.1.0
+  assetPath: Assets/Distant Lands/Katarreophobia - Stylized Boreal Forest/Contents/Materials/Shaders/Stylized
+    Vine.shader
+  uploadId: 692806
