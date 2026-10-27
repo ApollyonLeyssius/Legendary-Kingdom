@@ -3144,6 +3144,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 62935854}
     - target: {fileID: 6764824011267557621, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1553045372}
+    - target: {fileID: 6764824011267557621, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
       propertyPath: attackRange
       value: 200
       objectReference: {fileID: 0}
@@ -3259,6 +3263,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d6604dacd1baf438c17b6afcabac43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
+--- !u!95 &1553045372 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2675269097854985917, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
+  m_PrefabInstance: {fileID: 1553045362}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1589824404 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6592055362503930184, guid: 447fe6ce48b72894f81c126d57dc8152, type: 3}
