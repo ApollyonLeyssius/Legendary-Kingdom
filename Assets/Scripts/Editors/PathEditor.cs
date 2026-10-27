@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -7,22 +8,17 @@ using UnityEngine;
 public class PathEditor : Editor
 {
     private Path path;
-
     private bool isDrawing;
 
     private void OnEnable()
     {
-        path =
-            (Path)target;
-
-        SceneView.duringSceneGui +=
-            OnSceneGUI;
+        path = (Path)target;
+        SceneView.duringSceneGui += OnSceneGUI;
     }
 
     private void OnDisable()
     {
-        SceneView.duringSceneGui -=
-            OnSceneGUI;
+        SceneView.duringSceneGui -= OnSceneGUI;
     }
 
     public override void OnInspectorGUI()
@@ -30,47 +26,46 @@ public class PathEditor : Editor
         DrawDefaultInspector();
 
         EditorGUILayout.Space();
+        EditorGUILayout.LabelField(
+            "Path Drawing",
+            EditorStyles.boldLabel);
 
         if (GUILayout.Button("Draw Path"))
         {
             isDrawing = true;
-
             SceneView.RepaintAll();
         }
 
         if (GUILayout.Button("Stop Drawing"))
         {
             isDrawing = false;
-
             SceneView.RepaintAll();
         }
 
         if (GUILayout.Button("Generate Preview"))
         {
-            Undo.RecordObject(
-                path,
-                "Generate Path"
-            );
-
+            Undo.RecordObject(path, "Generate Path");
             path.GenerateMesh();
-
             EditorUtility.SetDirty(path);
+            SceneView.RepaintAll();
         }
 
         if (GUILayout.Button("Finish Path"))
-        {
             FinishPath();
-        }
+
+        EditorGUILayout.HelpBox(
+            "While drawing, left-click the terrain once to add each point. " +
+            "Dragging will not add points. Use Enable Texture Blending " +
+            "to toggle soft edges and end fades.",
+            MessageType.Info);
     }
 
-    private void OnSceneGUI(
-        SceneView sceneView)
+    private void OnSceneGUI(SceneView sceneView)
     {
         if (path == null)
             return;
 
         DrawCurve();
-
         DrawPoints();
 
         if (isDrawing)
@@ -79,33 +74,19 @@ public class PathEditor : Editor
 
     private void DrawCurve()
     {
-        List<Vector3> points =
-            path.GetCenterlinePoints();
+        List<Vector3> centerline = path.GetCenterlinePoints();
 
-        if (points.Count < 2)
+        if (centerline.Count < 2)
             return;
 
-        Handles.color =
-            Color.yellow;
+        Handles.color = Color.yellow;
 
-        for (int i = 0;
-             i < points.Count - 1;
-             i++)
+        for (int i = 0; i < centerline.Count - 1; i++)
         {
-            Vector3 a =
-                path.transform.TransformPoint(
-                    points[i]
-                );
+            Vector3 a = path.transform.TransformPoint(centerline[i]);
+            Vector3 b = path.transform.TransformPoint(centerline[i + 1]);
 
-            Vector3 b =
-                path.transform.TransformPoint(
-                    points[i + 1]
-                );
-
-            Handles.DrawLine(
-                a,
-                b
-            );
+            Handles.DrawLine(a, b);
         }
     }
 
@@ -114,177 +95,91 @@ public class PathEditor : Editor
         if (path.points == null)
             return;
 
-        for (int i = 0;
-             i < path.points.Length;
-             i++)
+        for (int i = 0; i < path.points.Length; i++)
         {
             Vector3 worldPoint =
-                path.transform.TransformPoint(
-                    path.points[i]
-                );
+                path.transform.TransformPoint(path.points[i]);
 
             float size =
-                HandleUtility.GetHandleSize(
-                    worldPoint
-                ) * 0.08f;
+                HandleUtility.GetHandleSize(worldPoint) * 0.08f;
 
-            Handles.color =
-                Color.cyan;
+            Handles.color = Color.cyan;
 
             Handles.SphereHandleCap(
                 0,
                 worldPoint,
                 Quaternion.identity,
                 size,
-                EventType.Repaint
-            );
+                EventType.Repaint);
+
+            Handles.Label(
+                worldPoint + Vector3.up * size * 1.5f,
+                i.ToString());
         }
     }
 
     private void HandleDrawing()
     {
-        Event e =
-            Event.current;
+        Event e = Event.current;
 
         if (e.type != EventType.MouseDown ||
             e.button != 0 ||
             e.alt)
-        {
             return;
-        }
 
-        Ray ray =
-            HandleUtility.GUIPointToWorldRay(
-                e.mousePosition
-            );
+        Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
 
         if (Physics.Raycast(
             ray,
             out RaycastHit hit,
-            Mathf.Infinity))
+            Mathf.Infinity,
+            path.terrainLayer,
+            QueryTriggerInteraction.Ignore))
         {
-            AddPoint(
-                hit.point
-            );
-
+            AddPoint(hit.point);
             e.Use();
         }
     }
 
-    private void AddPoint(
-        Vector3 worldPoint)
+    private void AddPoint(Vector3 worldPoint)
     {
         Vector3 localPoint =
-            path.transform.InverseTransformPoint(
-                worldPoint
-            );
+            path.transform.InverseTransformPoint(worldPoint);
 
-        Undo.RecordObject(
-            path,
-            "Add Path Point"
-        );
+        Undo.RecordObject(path, "Add Path Point");
 
-        List<Vector3> points =
-            new List<Vector3>(
-                path.points
-            );
-
-        points.Add(
-            localPoint
-        );
-
-        path.points =
-            points.ToArray();
+        List<Vector3> points = new List<Vector3>(path.points);
+        points.Add(localPoint);
+        path.points = points.ToArray();
 
         path.GenerateMesh();
 
-        EditorUtility.SetDirty(
-            path
-        );
-
+        EditorUtility.SetDirty(path);
         SceneView.RepaintAll();
     }
 
     private void FinishPath()
     {
-        if (path.points == null ||
-            path.points.Length < 2)
+        if (path.points == null || path.points.Length < 2)
         {
-            Debug.LogWarning(
-                "Add at least 2 points."
-            );
-
+            EditorUtility.DisplayDialog(
+                "Cannot Finish Path",
+                "Add at least 2 path points first.",
+                "OK");
             return;
         }
 
         path.GenerateMesh();
 
-        GameObject finished =
-            new GameObject(
-                "DirtPath"
-            );
+        GameObject finished = new GameObject("DirtPath");
 
-        finished.transform.position =
-            path.transform.position;
+        finished.transform.position = path.transform.position;
+        finished.transform.rotation = path.transform.rotation;
+        finished.transform.localScale = path.transform.localScale;
 
-        finished.transform.rotation =
-            path.transform.rotation;
+        DirtPath dirtPath = finished.AddComponent<DirtPath>();
 
-        finished.transform.localScale =
-            path.transform.localScale;
-
-        DirtPath dirtPath =
-            finished.AddComponent<DirtPath>();
-
-        dirtPath.points =
-            (Vector3[])path.points.Clone();
-
-        dirtPath.width =
-            path.width;
-
-        dirtPath.splineResolution =
-            path.splineResolution;
-
-        dirtPath.terrainBlend =
-            path.terrainBlend;
-
-        dirtPath.blendWidth =
-            path.blendWidth;
-
-        dirtPath.widthSegments =
-            path.widthSegments;
-
-        dirtPath.terrainLayer =
-            path.terrainLayer;
-
-        dirtPath.terrainOffset =
-            path.terrainOffset;
-
-        dirtPath.irregularEdges =
-            path.irregularEdges;
-
-        dirtPath.edgeVariation =
-            path.edgeVariation;
-
-        dirtPath.edgeNoiseScale =
-            path.edgeNoiseScale;
-
-        dirtPath.pathMaterial =
-            path.pathMaterial;
-
-        MeshFilter source =
-            path.GetComponent<MeshFilter>();
-
-        MeshFilter destination =
-            finished.GetComponent<MeshFilter>();
-
-        if (source.sharedMesh != null)
-        {
-            destination.sharedMesh =
-                Instantiate(
-                    source.sharedMesh
-                );
-        }
+        CopySettings(path, dirtPath);
 
         MeshRenderer sourceRenderer =
             path.GetComponent<MeshRenderer>();
@@ -294,126 +189,127 @@ public class PathEditor : Editor
 
         if (sourceRenderer != null)
         {
-            destinationRenderer.sharedMaterial =
-                sourceRenderer.sharedMaterial;
+            destinationRenderer.sharedMaterials =
+                sourceRenderer.sharedMaterials;
+        }
+
+        dirtPath.GenerateMesh();
+
+        MeshFilter destinationFilter =
+            finished.GetComponent<MeshFilter>();
+
+        if (destinationFilter.sharedMesh == null)
+        {
+            DestroyImmediate(finished);
+            Debug.LogError("Finished path mesh generation failed.");
+            return;
+        }
+
+        if (!SaveAsPrefab(finished))
+        {
+            Debug.LogError(
+                "Prefab saving failed. The scene object was kept.");
+
+            Undo.RegisterCreatedObjectUndo(
+                finished, "Create Dirt Path");
+
+            Selection.activeGameObject = finished;
+            return;
         }
 
         Undo.RegisterCreatedObjectUndo(
-            finished,
-            "Create Dirt Path"
-        );
+            finished, "Create Dirt Path");
 
-        SaveAsPrefab(
-            finished
-        );
+        Selection.activeGameObject = finished;
 
-        Selection.activeGameObject =
-            finished;
-
-        path.points =
-            new Vector3[0];
-
+        Undo.RecordObject(path, "Clear Finished Path");
+        path.points = new Vector3[0];
         path.GenerateMesh();
 
-        isDrawing = false;
+        EditorUtility.SetDirty(path);
 
+        isDrawing = false;
         SceneView.RepaintAll();
 
-        Debug.Log(
-            "Path finished and automatically saved as a prefab."
-        );
+        Debug.Log("Path finished and saved as a prefab.");
     }
 
-    private void SaveAsPrefab(
-        GameObject finished)
+    private void CopySettings(Path source, DirtPath destination)
     {
-        string prefabFolder =
-            "Assets/Prefabs";
+        destination.points = (Vector3[])source.points.Clone();
+        destination.width = source.width;
+        destination.splineResolution = source.splineResolution;
 
-        string meshFolder =
-            "Assets/Prefabs/Meshes";
+        destination.widthSegments = source.widthSegments;
+        destination.terrainLayer = source.terrainLayer;
+        destination.terrainOffset = source.terrainOffset;
+        destination.terrainRayHeight = source.terrainRayHeight;
+        destination.terrainRayDistance = source.terrainRayDistance;
 
-        if (!Directory.Exists(
-            prefabFolder))
-        {
-            Directory.CreateDirectory(
-                prefabFolder
-            );
-        }
+        destination.enableTextureBlending =
+            source.enableTextureBlending;
 
-        if (!Directory.Exists(
-            meshFolder))
-        {
-            Directory.CreateDirectory(
-                meshFolder
-            );
-        }
+        destination.edgeBlendWidth = source.edgeBlendWidth;
+        destination.startFadeLength = source.startFadeLength;
+        destination.endFadeLength = source.endFadeLength;
+
+        destination.irregularEdges = source.irregularEdges;
+        destination.edgeVariation = source.edgeVariation;
+        destination.edgeNoiseScale = source.edgeNoiseScale;
+
+        destination.pathMaterial = source.pathMaterial;
+    }
+
+    private bool SaveAsPrefab(GameObject finished)
+    {
+        const string prefabFolder = "Assets/Prefabs";
+        const string meshFolder = "Assets/Prefabs/Meshes";
+
+        if (!Directory.Exists(prefabFolder))
+            Directory.CreateDirectory(prefabFolder);
+
+        if (!Directory.Exists(meshFolder))
+            Directory.CreateDirectory(meshFolder);
 
         AssetDatabase.Refresh();
 
-        MeshFilter filter =
-            finished.GetComponent<MeshFilter>();
+        MeshFilter filter = finished.GetComponent<MeshFilter>();
 
-        if (filter == null ||
-            filter.sharedMesh == null)
+        if (filter == null || filter.sharedMesh == null)
         {
-            Debug.LogError(
-                "DirtPath has no mesh."
-            );
-
-            return;
+            Debug.LogError("DirtPath has no mesh to save.");
+            return false;
         }
 
-        Mesh mesh =
-            filter.sharedMesh;
+        Mesh mesh = filter.sharedMesh;
 
         if (!AssetDatabase.Contains(mesh))
         {
-            string meshPath =
-                AssetDatabase.GenerateUniqueAssetPath(
-                    meshFolder +
-                    "/DirtPathMesh.asset"
-                );
+            string meshPath = AssetDatabase.GenerateUniqueAssetPath(
+                meshFolder + "/DirtPathMesh.asset");
 
-            mesh.name =
-                "DirtPathMesh";
+            mesh.name = "DirtPathMesh";
 
-            AssetDatabase.CreateAsset(
-                mesh,
-                meshPath
-            );
-
-            filter.sharedMesh =
-                mesh;
+            AssetDatabase.CreateAsset(mesh, meshPath);
+            filter.sharedMesh = mesh;
         }
 
-        string prefabPath =
-            AssetDatabase.GenerateUniqueAssetPath(
-                prefabFolder +
-                "/DirtPath.prefab"
-            );
+        string prefabPath = AssetDatabase.GenerateUniqueAssetPath(
+            prefabFolder + "/DirtPath.prefab");
 
-        GameObject prefab =
-            PrefabUtility.SaveAsPrefabAsset(
-                finished,
-                prefabPath
-            );
+        GameObject prefab = PrefabUtility.SaveAsPrefabAsset(
+            finished, prefabPath);
 
         if (prefab == null)
         {
-            Debug.LogError(
-                "Could not save prefab."
-            );
-
-            return;
+            Debug.LogError("Unity could not save the prefab.");
+            return false;
         }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log(
-            "Saved DirtPath prefab: " +
-            prefabPath
-        );
+        Debug.Log("Saved prefab: " + prefabPath);
+        return true;
     }
 }
