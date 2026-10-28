@@ -8,17 +8,22 @@ public class EnemyEvents
     public EnemyEvents()
     {
         Health.OnEnemyDeath += HandleEnemyDeath;
-        Health.onBossDeath += HandleEnemyDeath;
+        Health.onBossDeath += HandleBossDeath;
     }
     public void Dispose()
     {
         Health.OnEnemyDeath -= HandleEnemyDeath;
-        Health.onBossDeath -= HandleEnemyDeath;
+        Health.onBossDeath -= HandleBossDeath;
     }
 
     private void HandleEnemyDeath()
     {
         EnemyKilled?.Invoke();
+    }
+
+    private void HandleBossDeath()
+    {
+        onBossKilled?.Invoke();
     }
 
 
