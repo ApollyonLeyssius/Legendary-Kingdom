@@ -29,7 +29,7 @@ public class BossQuestStep : QuestStep
     private void UpdateState()
     {
         string state = Bosseskilled.ToString();
-        string status = "Defeated " + Bosseskilled + " / " + BossesToKill + " enemies";
+        string status = "Kill the boss roaming the map";
         Changestate(state, status);
     }
     protected override void SetQuestStepState(string state)

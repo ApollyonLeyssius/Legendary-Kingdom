@@ -1,8 +1,7 @@
 
-using UnityEngine;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 public class LootScatterTool : EditorWindow
 {

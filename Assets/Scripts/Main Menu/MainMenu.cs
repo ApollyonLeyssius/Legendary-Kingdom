@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
@@ -16,7 +15,7 @@ public class MainMenu : MonoBehaviour
         ControlPanel.SetActive(true);
     }
 
-    public void ControlsClose() 
+    public void ControlsClose()
     {
         ControlPanel.SetActive(false);
     }
