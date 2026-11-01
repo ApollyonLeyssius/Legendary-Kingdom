@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 47500bddc769bd14ba8e604ef74f04fc
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266406
+  packageName: 'Katarreophobia: Stylized Boreal Forest'
+  packageVersion: 1.1.0
+  assetPath: Assets/Distant Lands/Katarreophobia - Stylized Boreal Forest/Contents/Materials/Shaders/Stylized
+    Tree Trunk.shader
+  uploadId: 692806

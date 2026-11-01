@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2847579295630711541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1458270491392659194}
+  - component: {fileID: 2553750363957054469}
+  - component: {fileID: 786859724208337017}
+  - component: {fileID: 3123998837720945262}
+  m_Layer: 0
+  m_Name: DirtPath 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1458270491392659194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847579295630711541}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 496.75583, y: -0.00002, z: 355.52264}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &2553750363957054469
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847579295630711541}
+  m_Mesh: {fileID: 4300000, guid: d8dfe7fa4bf9bfa41a9e13fe8159ab87, type: 2}
+--- !u!23 &786859724208337017
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847579295630711541}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9332d46c2f68f89468a35c007eeafb7f, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3123998837720945262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847579295630711541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cbf3cfff6202904d9ded551505baba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DirtPath
+  points:
+  - {x: 530.7186, y: 7.644332, z: 79.62305}
+  - {x: 514.0106, y: 8.215522, z: 73.898895}
+  - {x: 496.00497, y: 8.1181345, z: 70.075806}
+  - {x: 488.92734, y: 8.807399, z: 69.05017}
+  - {x: 479.20078, y: 12.512342, z: 69.31433}
+  - {x: 472.02463, y: 13.235799, z: 70.272095}
+  - {x: 464.2814, y: 12.600858, z: 79.30493}
+  - {x: 458.72525, y: 12.84941, z: 89.77887}
+  - {x: 454.89908, y: 11.827115, z: 102.35397}
+  - {x: 451.2911, y: 9.303567, z: 120.6055}
+  - {x: 447.5352, y: 10.8880625, z: 131.92966}
+  - {x: 443.2267, y: 13.228774, z: 147.69525}
+  - {x: 436.8566, y: 13.969401, z: 156.69891}
+  - {x: 428.491, y: 13.924003, z: 161.52228}
+  - {x: 415.67667, y: 11.498462, z: 172.02448}
+  - {x: 413.0123, y: 11.55132, z: 185.25494}
+  - {x: 416.57065, y: 11.596028, z: 194.65833}
+  width: 4
+  splineResolution: 2
+  widthSegments: 7
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  terrainOffset: 0.05
+  terrainRayHeight: 500
+  terrainRayDistance: 1000
+  enableTextureBlending: 1
+  edgeBlendWidth: 0.8
+  startFadeLength: 2
+  endFadeLength: 2
+  irregularEdges: 1
+  edgeVariation: 0.15
+  edgeNoiseScale: 0.8
+  pathMaterial: {fileID: 2100000, guid: 9332d46c2f68f89468a35c007eeafb7f, type: 2}

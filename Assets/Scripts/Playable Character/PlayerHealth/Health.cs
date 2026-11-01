@@ -6,8 +6,9 @@ public class Health : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private bool loadDeathSceneOnDeath;
     [SerializeField] private SceneLoader sceneLoader;
-    [SerializeField] private Characterstate characterstate;
+    [SerializeField] private CharacterType characterType;
     public static event Action OnEnemyDeath;
+    public static event Action onBossDeath;
 
     private float currentHealth;
 
@@ -42,7 +43,7 @@ public class Health : MonoBehaviour
     {
         Debug.Log(gameObject.name + " died!");
 
-        if (characterstate == Characterstate.player)
+        if (characterType == CharacterType.PLAYER)
         {
             if (loadDeathSceneOnDeath)
             {
@@ -60,7 +61,7 @@ public class Health : MonoBehaviour
             return;
         }
 
-        if (characterstate == Characterstate.enemy)
+        if (characterType == CharacterType.ENEMY)
         {
             Debug.Log("Enemy death event triggered: " + gameObject.name);
 
@@ -69,11 +70,14 @@ public class Health : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        if (characterType == CharacterType.BOSS)
+        {
+            onBossDeath?.Invoke();
+            Destroy(gameObject);
+            return;
+        }
     }
 
-    public enum Characterstate
-    {
-        player,
-        enemy
-    }
+
 }

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 014c75eecfd32e8408be368612f8be0e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266406
+  packageName: 'Katarreophobia: Stylized Boreal Forest'
+  packageVersion: 1.1.0
+  assetPath: Assets/Distant Lands/Katarreophobia - Stylized Boreal Forest/Contents/Materials/Shaders/HueVariation.asset
+  uploadId: 692806

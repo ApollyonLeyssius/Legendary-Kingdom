@@ -1,3 +1,5 @@
+VAR Dialoguechanger = 0
+
 === collectCoinsStart ===
 { CollectCoinsQuestState:
 - "REQUIREMENTS_NOT_MET": -> requirementsNotMet
@@ -9,7 +11,7 @@
 }
 
 = requirementsNotMet
-Kanker homo jij bent fucking zwak kom terug wanneer je het waard bent!
+Jij bent hayek zwak! Kom terug wanneer je sterk genoeg bent!
 -> END
 
 = canStart
@@ -19,11 +21,11 @@ Kan je mij die hayek grote coins geven?
     ~ StartQuest("CollectCoinsQuest")
     Dankjewel niffo!
 * [Kifesh met jou vriend!]
-    Kanker op!
+    Ik heb ook niks aan jou!
 - -> END
 
 = inProgress
-Kut neger pak die coins dan. Of moet ik je bossen?
+Oi! Pak die coins dan! Of moet ik je bossen?
 Dacht ik al.
 -> END
 
@@ -32,5 +34,6 @@ Breng het naar mijn niffo daar, ik ben het hem nog verschuldigd.
 -> END
 
 = finished
-Kyfesh doe je hier?
+Kifesh doe je hier?!
+~Dialoguechanger = 1
 -> END

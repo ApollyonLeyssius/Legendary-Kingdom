@@ -11,6 +11,7 @@ TagManager:
   - TransparentFX
   - Ignore Raycast
   - Ground
+  - Terrain
   - Water
   - UI
   - Walls

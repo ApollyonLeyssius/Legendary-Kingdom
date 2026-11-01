@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
     private const string DeathScene = "DeathScene";
-    private const string EnemyAI = "EnemyAI";
 
     public void LoadDeathScene()
     {
@@ -13,6 +12,6 @@ public class SceneLoader : MonoBehaviour
 
     public void ReplayGame()
     {
-        SceneManager.LoadScene(EnemyAI);
+        SceneManager.LoadScene("Map");
     }
 }

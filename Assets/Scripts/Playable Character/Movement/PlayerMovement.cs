@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float sprintSpeed = 9f;
     [SerializeField] private float rotationSmoothTime = 0.1f;
     [SerializeField] private float jumpHeight = 1f;
     [SerializeField] private float gravity = -20f;
@@ -24,6 +26,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float minPitch = -25f;
     [SerializeField] private float maxPitch = 65f;
 
+    [Header("Animation")]
+    [SerializeField] private bool useSprintAnimation = true;
+
+    [Header("Debugging")]
+    [SerializeField] private bool showAnimatorDebug = true;
+
     private static readonly int WalkingTrigger =
         Animator.StringToHash("IsWalking");
 
@@ -33,11 +41,25 @@ public class PlayerMovement : MonoBehaviour
     private static readonly int JumpTrigger =
         Animator.StringToHash("IsJumping");
 
+    private static readonly int SprintTrigger =
+        Animator.StringToHash("IsSprinting");
+
+    private enum MovementState
+    {
+        Idle,
+        Walking,
+        Sprinting
+    }
+
+    private MovementState currentMovementState = MovementState.Idle;
+    private bool movementStateInitialized;
+
     private CharacterController controller;
 
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
+    private InputAction sprintAction;
 
     private float verticalVelocity;
     private float cameraYaw;
@@ -46,8 +68,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 cameraFocus;
     private Vector3 cameraFollowVelocity;
-    private QuestLogUI questLogUI;
-    private bool isWalking;
+
+    private bool isSprinting;
 
     private void Awake()
     {
@@ -58,7 +80,10 @@ public class PlayerMovement : MonoBehaviour
             animator = GetComponentInChildren<Animator>();
         }
 
-        moveAction = new InputAction("Move", InputActionType.Value);
+        moveAction = new InputAction(
+            "Move",
+            InputActionType.Value
+        );
 
         moveAction.AddCompositeBinding("2DVector")
             .With("Up", "<Keyboard>/w")
@@ -68,18 +93,34 @@ public class PlayerMovement : MonoBehaviour
 
         moveAction.AddBinding("<Gamepad>/leftStick");
 
-        lookAction = new InputAction("Look", InputActionType.Value);
+        lookAction = new InputAction(
+            "Look",
+            InputActionType.Value
+        );
+
         lookAction.AddBinding("<Mouse>/delta");
         lookAction.AddBinding("<Gamepad>/rightStick");
 
-        jumpAction = new InputAction("Jump", InputActionType.Button);
+        jumpAction = new InputAction(
+            "Jump",
+            InputActionType.Button
+        );
+
         jumpAction.AddBinding("<Keyboard>/space");
         jumpAction.AddBinding("<Gamepad>/buttonSouth");
+
+        sprintAction = new InputAction(
+            "Sprint",
+            InputActionType.Button
+        );
+
+        sprintAction.AddBinding("<Keyboard>/leftShift");
+        sprintAction.AddBinding("<Gamepad>/leftStickPress");
 
         if (playerCamera == null)
         {
             Debug.LogError(
-                "Sleep de Main Camera naar het veld Player Camera.",
+                "Assign the Main Camera to Player Camera.",
                 this
             );
 
@@ -93,27 +134,36 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        lookAction.Enable();
-        jumpAction.Enable();
+        moveAction?.Enable();
+        lookAction?.Enable();
+        jumpAction?.Enable();
+        sprintAction?.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction?.Disable();
+        lookAction?.Disable();
+        jumpAction?.Disable();
+        sprintAction?.Disable();
     }
 
     private void Start()
     {
         cameraYaw = transform.eulerAngles.y;
-        cameraPitch = Mathf.Clamp(startingPitch, minPitch, maxPitch);
+
+        cameraPitch = Mathf.Clamp(
+            startingPitch,
+            minPitch,
+            maxPitch
+        );
 
         cameraFocus = transform.position
             + Vector3.up * cameraTargetHeight;
 
         UpdateCameraTransform();
-    }
 
-    private void OnDisable()
-    {
-        moveAction.Disable();
-        lookAction.Disable();
-        jumpAction.Disable();
+        DebugAnimator();
     }
 
     private void Update()
@@ -126,7 +176,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 lookInput = lookAction.ReadValue<Vector2>();
 
-        bool usingMouse = lookAction.activeControl?.device is Mouse;
+        bool usingMouse =
+            lookAction.activeControl?.device is Mouse;
 
         float sensitivity = usingMouse
             ? mouseSensitivity
@@ -135,7 +186,11 @@ public class PlayerMovement : MonoBehaviour
         cameraYaw += lookInput.x * sensitivity;
         cameraPitch -= lookInput.y * sensitivity;
 
-        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+        cameraPitch = Mathf.Clamp(
+            cameraPitch,
+            minPitch,
+            maxPitch
+        );
     }
 
     private void Move()
@@ -145,30 +200,17 @@ public class PlayerMovement : MonoBehaviour
             1f
         );
 
-        bool shouldWalk = input.sqrMagnitude > 0.001f;
+        bool isMoving = input.sqrMagnitude > 0.001f;
 
-        if (shouldWalk != isWalking)
-        {
-            if (animator != null)
-            {
-                animator.ResetTrigger(WalkingTrigger);
-                animator.ResetTrigger(IdleTrigger);
+        isSprinting =
+            isMoving && sprintAction.IsPressed();
 
-                if (shouldWalk)
-                {
-                    animator.SetTrigger(WalkingTrigger);
-                }
-                else
-                {
-                    animator.SetTrigger(IdleTrigger);
-                }
-            }
-
-            isWalking = shouldWalk;
-        }
+        UpdateMovementAnimation(isMoving);
 
         Quaternion cameraHeading = Quaternion.Euler(
-            0f, cameraYaw, 0f
+            0f,
+            cameraYaw,
+            0f
         );
 
         Vector3 moveDirection = cameraHeading
@@ -189,7 +231,9 @@ public class PlayerMovement : MonoBehaviour
             );
 
             transform.rotation = Quaternion.Euler(
-                0f, smoothedAngle, 0f
+                0f,
+                smoothedAngle,
+                0f
             );
         }
         else
@@ -197,10 +241,34 @@ public class PlayerMovement : MonoBehaviour
             rotationVelocity = 0f;
         }
 
+        HandleJump();
+
+        float currentSpeed = isSprinting
+            ? sprintSpeed
+            : moveSpeed;
+
+        Vector3 velocity = moveDirection * currentSpeed;
+        velocity.y = verticalVelocity;
+
+        CollisionFlags collisions = controller.Move(
+            velocity * Time.deltaTime
+        );
+
+        if ((collisions & CollisionFlags.Above) != 0
+            && verticalVelocity > 0f)
+        {
+            verticalVelocity = 0f;
+        }
+    }
+
+    private void HandleJump()
+    {
         if (controller.isGrounded)
         {
             if (verticalVelocity < 0f)
+            {
                 verticalVelocity = -2f;
+            }
 
             if (jumpAction.WasPressedThisFrame())
             {
@@ -213,29 +281,144 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetTrigger(JumpTrigger);
                 }
             }
-
-            if (jumpAction.WasPressedThisFrame())
-            {
-                verticalVelocity = Mathf.Sqrt(
-                    jumpHeight * -2f * gravity
-                );
-            }
         }
 
         verticalVelocity += gravity * Time.deltaTime;
+    }
 
-        Vector3 velocity = moveDirection * moveSpeed;
-        velocity.y = verticalVelocity;
+    private void UpdateMovementAnimation(bool isMoving)
+    {
+        MovementState newState;
 
-        CollisionFlags collisions = controller.Move(
-            velocity * Time.deltaTime
+        if (!isMoving)
+        {
+            newState = MovementState.Idle;
+        }
+        else if (isSprinting && useSprintAnimation)
+        {
+            newState = MovementState.Sprinting;
+        }
+        else
+        {
+            newState = MovementState.Walking;
+        }
+
+        if (movementStateInitialized &&
+            newState == currentMovementState)
+        {
+            return;
+        }
+
+        currentMovementState = newState;
+        movementStateInitialized = true;
+
+        if (animator == null)
+        {
+            return;
+        }
+
+        // Clear previous movement requests.
+        animator.ResetTrigger(WalkingTrigger);
+        animator.ResetTrigger(IdleTrigger);
+        animator.ResetTrigger(SprintTrigger);
+
+        switch (currentMovementState)
+        {
+            case MovementState.Idle:
+                animator.SetTrigger(IdleTrigger);
+                break;
+
+            case MovementState.Walking:
+                animator.SetTrigger(WalkingTrigger);
+                break;
+
+            case MovementState.Sprinting:
+                animator.SetTrigger(SprintTrigger);
+                break;
+        }
+
+        if (showAnimatorDebug)
+        {
+            Debug.Log(
+                "Player movement animation: " +
+                currentMovementState
+            );
+        }
+    }
+
+    private void DebugAnimator()
+    {
+        if (!showAnimatorDebug)
+        {
+            return;
+        }
+
+        if (animator == null)
+        {
+            Debug.LogError(
+                "PlayerMovement: Animator is missing!"
+            );
+            return;
+        }
+
+        Debug.Log(
+            "Player Animator: " + animator.gameObject.name
         );
 
-        if ((collisions & CollisionFlags.Above) != 0
-            && verticalVelocity > 0f)
+        Debug.Log(
+            "Animator Controller: " +
+            (animator.runtimeAnimatorController != null
+                ? animator.runtimeAnimatorController.name
+                : "NONE")
+        );
+
+        foreach (AnimatorControllerParameter parameter
+                 in animator.parameters)
         {
-            verticalVelocity = 0f;
+            Debug.Log(
+                "Animator Parameter: " +
+                parameter.name +
+                " | Type: " +
+                parameter.type
+            );
         }
+
+        CheckAnimatorTrigger("IsWalking");
+        CheckAnimatorTrigger("IsIdle");
+        CheckAnimatorTrigger("IsJumping");
+        CheckAnimatorTrigger("IsSprinting");
+    }
+
+    private void CheckAnimatorTrigger(string parameterName)
+    {
+        foreach (AnimatorControllerParameter parameter
+                 in animator.parameters)
+        {
+            if (parameter.name != parameterName)
+            {
+                continue;
+            }
+
+            if (parameter.type ==
+                AnimatorControllerParameterType.Trigger)
+            {
+                Debug.Log(
+                    "Animator Trigger OK: " + parameterName
+                );
+            }
+            else
+            {
+                Debug.LogError(
+                    parameterName + " is not a Trigger!"
+                );
+            }
+
+            return;
+        }
+
+        Debug.LogError(
+            "Missing Animator Trigger: " + parameterName
+        );
     }
 
     private void LateUpdate()
@@ -256,7 +439,9 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateCameraTransform()
     {
         Quaternion cameraRotation = Quaternion.Euler(
-            cameraPitch, cameraYaw, 0f
+            cameraPitch,
+            cameraYaw,
+            0f
         );
 
         Vector3 cameraPosition = cameraFocus
@@ -273,5 +458,6 @@ public class PlayerMovement : MonoBehaviour
         moveAction?.Dispose();
         lookAction?.Dispose();
         jumpAction?.Dispose();
+        sprintAction?.Dispose();
     }
 }
