@@ -1350,6 +1350,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 3462661722917580830, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4413205385333955019, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
       propertyPath: player
       value: 
@@ -5211,6 +5215,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 1131999849853407100, guid: 4c245da0677d64743b6dd3689a18caea, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 1275867644589903565, guid: 4c245da0677d64743b6dd3689a18caea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 908.4
@@ -5266,7 +5274,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1945302634307146871, guid: 4c245da0677d64743b6dd3689a18caea, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1050968651}
   m_SourcePrefab: {fileID: 100100000, guid: 4c245da0677d64743b6dd3689a18caea, type: 3}
 --- !u!95 &603122931 stripped
 Animator:
@@ -5950,6 +5961,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 3462661722917580830, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4413205385333955019, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
       propertyPath: player
       value: 
@@ -6463,6 +6478,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 3462661722917580830, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4413205385333955019, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
       propertyPath: player
       value: 
@@ -6956,6 +6975,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 3462661722917580830, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4413205385333955019, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
       propertyPath: player
       value: 
@@ -9937,6 +9960,27 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 692ece5936f47cd48962b36acd0fe5ce, type: 3}
+--- !u!1 &1050968634 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1945302634307146871, guid: 4c245da0677d64743b6dd3689a18caea, type: 3}
+  m_PrefabInstance: {fileID: 603122930}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1050968651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050968634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abb4f209c0cdd248ae444b664d52c69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 500
+  loadDeathSceneOnDeath: 0
+  sceneLoader: {fileID: 0}
+  characterType: 2
 --- !u!1001 &1062208157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10075,6 +10119,50 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3fa6c9a4a8d2954da0b8e9fa3fcbcde, type: 3}
+--- !u!1 &1068931665
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1068931667}
+  - component: {fileID: 1068931666}
+  m_Layer: 0
+  m_Name: Scene loader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1068931666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068931665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7f03056f596874a9a4696d2296356a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+--- !u!4 &1068931667
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068931665}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1015.09216, y: 8.186, z: 430.30685}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1078839909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10610,6 +10698,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1291220403}
+    - target: {fileID: 3462661722917580830, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4413205385333955019, guid: 3230719acf083ca4fa0085b11859f582, type: 3}
       propertyPath: player
       value: 
@@ -11872,6 +11964,14 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 311666677}
+    - target: {fileID: 8601216284215064994, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
+      propertyPath: maxHealth
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8601216284215064994, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
+      propertyPath: sceneLoader
+      value: 
+      objectReference: {fileID: 1068931666}
     - target: {fileID: 9039008771324201304, guid: ac523fd0f4aa9bc41941a5166b04bbe1, type: 3}
       propertyPath: m_ActionEvents.Array.size
       value: 21
@@ -17814,6 +17914,7 @@ SceneRoots:
   - {fileID: 1993752473}
   - {fileID: 553190138}
   - {fileID: 49433657}
+  - {fileID: 1068931667}
   - {fileID: 1291220402}
   - {fileID: 1867748636}
   - {fileID: 1112314288}
