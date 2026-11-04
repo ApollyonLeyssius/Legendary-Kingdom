@@ -11,29 +11,28 @@ VAR Dialoguechanger = 0
 }
 
 = requirementsNotMet
-Jij bent hayek zwak! Kom terug wanneer je sterk genoeg bent!
+Jij bent hayek zwak! Kom terug wanneer je sterk genoeg bent! # voice:coin_start_01
 -> END
 
 = canStart
-Ewa Zebi!!!!!
-Kan je mij die hayek grote coins geven?
+Ewa Zebi!!!!! # voice:coin_start_02
+Kan je mij die hayek grote coins geven? # voice:coin_start_03
 * [Ewa ja!]
     ~ StartQuest("CollectCoinsQuest")
-    Dankjewel niffo!
+    Dankjewel niffo! # voice:coin_start_04
 * [Kifesh met jou vriend!]
-    Ik heb ook niks aan jou!
+    Ewa Sahbi ik heb niks aan jou! # voice:coin_start_05
 - -> END
 
 = inProgress
-Oi! Pak die coins dan! Of moet ik je bossen?
-Dacht ik al.
+Oi! Pak die coins dan! Of moet ik je bossen vriend? # voice:coin_start_06
 -> END
 
 = canFinish
-Breng het naar mijn niffo daar, ik ben het hem nog verschuldigd.
+Breng het naar mijn niffo daar, ik ben hem nog floes verschuldigd. # voice:coin_start_07
 -> END
 
 = finished
-Kifesh doe je hier?!
+Kifesh doe je hier?! # voice:coin_start_08
 ~Dialoguechanger = 1
 -> END

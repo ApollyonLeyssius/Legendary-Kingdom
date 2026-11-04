@@ -1,5 +1,6 @@
 using UnityEngine;
 using Ink.Runtime;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -106,7 +107,6 @@ public class DialogueManager : MonoBehaviour
         if (story.currentChoices.Count > 0 && currentChoiceIndex != -1) 
         {
             story.ChooseChoiceIndex(currentChoiceIndex);
-
             currentChoiceIndex = -1;
         }
 
@@ -126,6 +126,8 @@ public class DialogueManager : MonoBehaviour
 
             else
             {
+                string voiceId = GetTagValue(story.currentTags, "voice");
+                GameEventsManager.instance.dialogueEvents.RequestVoiceLine(voiceId);
                 GameEventsManager.instance.dialogueEvents.DisplayDialogue(dialogueLine, story.currentChoices);
             }
         }
@@ -137,6 +139,8 @@ public class DialogueManager : MonoBehaviour
     private void ExitDialogue() 
     {
         dialoguePlaying = false;
+
+        GameEventsManager.instance.dialogueEvents.RequestVoiceLine(string.Empty);
 
         GameEventsManager.instance.dialogueEvents.DialogueFinished();
 
@@ -152,5 +156,27 @@ public class DialogueManager : MonoBehaviour
     private bool IsLineBlank(string dialogueLine)
     {
         return dialogueLine.Trim().Equals("") || dialogueLine.Trim().Equals("\n");
+    }
+
+    private string GetTagValue(List<string> tags, string tagName)
+    {
+        foreach (string tag in tags)
+        {
+            int separatorIndex = tag.IndexOf(':');
+
+            if (separatorIndex == -1) 
+            {
+                continue;
+            }
+
+            string key = tag.Substring(0, separatorIndex).Trim();
+            string value = tag.Substring(separatorIndex + 1).Trim();
+
+            if (key.Equals(tagName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return value;
+            }
+        }
+        return string.Empty;
     }
 }

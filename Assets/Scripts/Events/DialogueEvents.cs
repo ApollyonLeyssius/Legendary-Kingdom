@@ -59,4 +59,11 @@ public class DialogueEvents
             onUpdateInkDialogueVariable(name, value);
         }
     }
+
+    public event Action<string> onVoiceLineRequested;
+    public void RequestVoiceLine(string voiceId)
+    {
+        onVoiceLineRequested?.Invoke(voiceId);
+    }
+
 }
